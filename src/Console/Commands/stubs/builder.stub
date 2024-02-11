@@ -1,0 +1,28 @@
+<?php
+
+namespace DummyNamespace;
+
+use Bjnstnkvc\BuilderMakeCommand\Concerns\BuildsDynamicWhereQueries;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+
+/**
+DummySignature
+* @mixin Builder
+*/
+class DummyClass extends Builder
+{
+    use BuildsDynamicWhereQueries;
+
+    /**
+     * Create a new Eloquent query builder instance.
+     *
+     * @param QueryBuilder $query
+     *
+     * @return void
+     */
+    public function __construct(QueryBuilder $query)
+    {
+        parent::__construct($query);
+    }
+}
