@@ -158,13 +158,13 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
 				$method = Str::studly($column);
 
 				return
-					'* @method DummyClass where' . $method . '(?string $operator = null, ?string $value = null) Add a "where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					'* @method DummyClass orWhere' . $method . '(?string $operator = null, ?string $value = null) Add an "or where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					'* @method DummyClass where' . $method . 'In(array $values) Add a "where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					'* @method DummyClass orWhere' . $method . 'In(array $values) Add an "or where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					'* @method DummyClass where' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					'* @method DummyClass orWhere' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					'*';
+					' * @method DummyClass where' . $method . '(?string $operator = null, ?string $value = null) Add a "where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass orWhere' . $method . '(?string $operator = null, ?string $value = null) Add an "or where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass where' . $method . 'In(array $values) Add a "where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass orWhere' . $method . 'In(array $values) Add an "or where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass where' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass orWhere' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' *';
 			})
 			->implode(PHP_EOL);
 	}
