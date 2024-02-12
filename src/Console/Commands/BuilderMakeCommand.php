@@ -16,7 +16,7 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
 	 *
 	 * @var string
 	 */
-	protected $signature = 'make:builder {name : The name of the builder} {--force}';
+	protected $signature = 'make:builder {name : The name of the builder} {model?: The name of the model} {--force}';
 
 	/**
 	 * The console command description.
@@ -113,6 +113,32 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
 	}
 
 	/**
+	 * Get the method signatures for the builder.
+	 *
+	 * @return string
+	 */
+	protected function getMethodSignatures(): string
+	{
+		$model   = $this->getModelFromName($this->argument('model') ?? $this->argument('name'));
+		$columns = $this->getModelColumns($model);
+
+		return Collection::make($columns)
+			->map(function ($column) {
+				$method = Str::studly($column);
+
+				return
+					' * @method DummyClass where' . $method . '(?string $operator = null, ?string $value = null) Add a "where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass orWhere' . $method . '(?string $operator = null, ?string $value = null) Add an "or where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass where' . $method . 'In(array $values) Add a "where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass orWhere' . $method . 'In(array $values) Add an "or where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass where' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' * @method DummyClass orWhere' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+					' *';
+			})
+			->implode(PHP_EOL);
+	}
+
+	/**
 	 * Get model instance from the builder name.
 	 *
 	 * @param string $name
@@ -135,38 +161,12 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
 	 *
 	 * @return array
 	 */
-	public function getModelColumns(Model $model): array
+	protected function getModelColumns(Model $model): array
 	{
 		return $model
 			->getConnection()
 			->getSchemaBuilder()
 			->getColumnListing($model->getTable());
-	}
-
-	/**
-	 * Get the method signatures for the builder.
-	 *
-	 * @return string
-	 */
-	protected function getMethodSignatures(): string
-	{
-		$model   = $this->getModelFromName($this->argument('name'));
-		$columns = $this->getModelColumns($model);
-
-		return Collection::make($columns)
-			->map(function ($column) {
-				$method = Str::studly($column);
-
-				return
-					' * @method DummyClass where' . $method . '(?string $operator = null, ?string $value = null) Add a "where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass orWhere' . $method . '(?string $operator = null, ?string $value = null) Add an "or where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass where' . $method . 'In(array $values) Add a "where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass orWhere' . $method . 'In(array $values) Add an "or where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass where' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass orWhere' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' *';
-			})
-			->implode(PHP_EOL);
 	}
 
 	/**
