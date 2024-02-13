@@ -17,27 +17,27 @@ trait BuildsDynamicWhereQueries
 	 */
 	public function __call($method, $parameters)
 	{
-		if ($this->getDynamicMethod($method) === 'where') {
+		if ($this->getDynamicMethod($method) === 'dynamicWhere') {
 			return $this->dynamicWhere($method, $parameters);
 		}
 
-		if ($this->getDynamicMethod($method) === 'whereIn') {
+		if ($this->getDynamicMethod($method) === 'dynamicWhereIn') {
 			return $this->dynamicWhereIn($method, $parameters);
 		}
 
-		if ($this->getDynamicMethod($method) === 'whereNotIn') {
+		if ($this->getDynamicMethod($method) === 'dynamicWhereNotIn') {
 			return $this->dynamicWhereNotIn($method, $parameters);
 		}
 
-		if ($this->getDynamicMethod($method) === 'orWhere') {
+		if ($this->getDynamicMethod($method) === 'dynamicOrWhere') {
 			return $this->dynamicOrWhere($method, $parameters);
 		}
 
-		if ($this->getDynamicMethod($method) === 'orWhereIn') {
+		if ($this->getDynamicMethod($method) === 'dynamicOrWhereIn') {
 			return $this->dynamicOrWhereIn($method, $parameters);
 		}
 
-		if ($this->getDynamicMethod($method) === 'orWhereNotIn') {
+		if ($this->getDynamicMethod($method) === 'dynamicOrWhereNotIn') {
 			return $this->dynamicOrWhereNotIn($method, $parameters);
 		}
 
@@ -54,14 +54,9 @@ trait BuildsDynamicWhereQueries
 	 */
 	protected function dynamicWhere(string $method, array $parameters): static
 	{
-		$column = Str::of($method)
-			->substr(5)
-			->ucsplit()
-			->map(fn(string $word) => strtolower($word))
-			->implode('_');
-
-		$operator = count($parameters) === 2 ? reset($parameters) : '=';
-		$value    = count($parameters) === 1 ? reset($parameters) : end($parameters);
+		$column   = $this->getQueryColumn($method, 'Where');
+		$operator = $this->getQueryOperator($parameters);
+		$value    = $this->getQueryValue($parameters);
 
 		return $this->where($column, $operator, $value);
 	}
@@ -76,13 +71,7 @@ trait BuildsDynamicWhereQueries
 	 */
 	protected function dynamicWhereIn(string $method, array $parameters): static
 	{
-		$column = Str::of($method)
-			->substr(5)
-			->substr(0, -2)
-			->ucsplit()
-			->map(fn(string $word) => strtolower($word))
-			->implode('_');
-
+		$column = $this->getQueryColumn($method, 'Where', 'In');
 		$values = Arr::flatten($parameters);
 
 		return $this->whereIn($column, $values);
@@ -98,13 +87,7 @@ trait BuildsDynamicWhereQueries
 	 */
 	protected function dynamicWhereNotIn(string $method, array $parameters): static
 	{
-		$column = Str::of($method)
-			->substr(5)
-			->substr(0, -5)
-			->ucsplit()
-			->map(fn(string $word) => strtolower($word))
-			->implode('_');
-
+		$column = $this->getQueryColumn($method, 'Where', 'NotIn');
 		$values = Arr::flatten($parameters);
 
 		return $this->whereNotIn($column, $values);
@@ -120,14 +103,9 @@ trait BuildsDynamicWhereQueries
 	 */
 	protected function dynamicOrWhere(string $method, array $parameters): static
 	{
-		$column = Str::of($method)
-			->substr(7)
-			->ucsplit()
-			->map(fn(string $word) => strtolower($word))
-			->implode('_');
-
-		$operator = count($parameters) === 2 ? reset($parameters) : '=';
-		$value    = count($parameters) === 1 ? reset($parameters) : end($parameters);
+		$column   = $this->getQueryColumn($method, 'OrWhere');
+		$operator = $this->getQueryOperator($parameters);
+		$value    = $this->getQueryValue($parameters);
 
 		return $this->orWhere($column, $operator, $value);
 	}
@@ -142,13 +120,7 @@ trait BuildsDynamicWhereQueries
 	 */
 	protected function dynamicOrWhereIn(string $method, array $parameters): static
 	{
-		$column = Str::of($method)
-			->substr(7)
-			->substr(0, -2)
-			->ucsplit()
-			->map(fn(string $word) => strtolower($word))
-			->implode('_');
-
+		$column = $this->getQueryColumn($method, 'OrWhere', 'In');
 		$values = Arr::flatten($parameters);
 
 		return $this->orWhereIn($column, $values);
@@ -164,51 +136,88 @@ trait BuildsDynamicWhereQueries
 	 */
 	protected function dynamicOrWhereNotIn(string $method, array $parameters): static
 	{
-		$column = Str::of($method)
-			->substr(7)
-			->substr(0, -5)
-			->ucsplit()
-			->map(fn(string $word) => strtolower($word))
-			->implode('_');
-
+		$column = $this->getQueryColumn($method, 'OrWhere', 'NotIn');
 		$values = Arr::flatten($parameters);
 
 		return $this->orWhereNotIn($column, $values);
 	}
 
 	/**
-	 * Retrieve the dynamic method for the builder, return false otherwise.
+	 * Retrieve the dynamic method for the builder.
 	 *
 	 * @param string $method
 	 *
-	 * @return string|bool
+	 * @return string
 	 */
-	protected function getDynamicMethod(string $method): string|bool
+	protected function getDynamicMethod(string $method): string
 	{
-		if ($method !== 'where' && str_starts_with($method, 'where') && !str_ends_with($method, 'In') && !str_ends_with($method, 'NotIn')) {
-			return 'where';
+		if ($method !== 'where' && Str::startsWith($method, 'where') && !Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
+			return 'dynamicWhere';
 		}
 
-		if ($method !== 'whereIn' && str_starts_with($method, 'where') && str_ends_with($method, 'In') && !str_ends_with($method, 'NotIn')) {
-			return 'whereIn';
+		if ($method !== 'whereIn' && Str::startsWith($method, 'where') && Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
+			return 'dynamicWhereIn';
 		}
 
-		if ($method !== 'whereNotIn' && str_starts_with($method, 'where') && str_ends_with($method, 'NotIn')) {
-			return 'whereNotIn';
+		if ($method !== 'whereNotIn' && Str::startsWith($method, 'where') && Str::endsWith($method, 'NotIn')) {
+			return 'dynamicWhereNotIn';
 		}
 
-		if ($method !== 'orWhere' && str_starts_with($method, 'orWhere') && !str_ends_with($method, 'In') && !str_ends_with($method, 'NotIn')) {
-			return 'orWhere';
+		if ($method !== 'orWhere' && Str::startsWith($method, 'orWhere') && !Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
+			return 'dynamicOrWhere';
 		}
 
-		if ($method !== 'orWhereIn' && str_starts_with($method, 'orWhere') && str_ends_with($method, 'In') && !str_ends_with($method, 'NotIn')) {
-			return 'orWhereIn';
+		if ($method !== 'orWhereIn' && Str::startsWith($method, 'orWhere') && Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
+			return 'dynamicOrWhereIn';
 		}
 
-		if ($method !== 'orWhereNotIn' && str_starts_with($method, 'orWhere') && str_ends_with($method, 'NotIn')) {
-			return 'orWhereNotIn';
+		if ($method !== 'orWhereNotIn' && Str::startsWith($method, 'orWhere') && Str::endsWith($method, 'NotIn')) {
+			return 'dynamicOrWhereNotIn';
 		}
 
-		return false;
+		return $method;
+	}
+
+	/**
+	 * Retrieve the column from the given method call.
+	 *
+	 * @param string      $method
+	 * @param string      $from
+	 * @param string|null $to
+	 *
+	 * @return string
+	 */
+	protected function getQueryColumn(string $method, string $from, ?string $to = null): string
+	{
+		return Str::of($method)
+			->substr(Str::length($from))
+			->substr(0, $to ? -Str::length($to) : null)
+			->ucsplit()
+			->map(fn(string $word) => Str::lower($word))
+			->implode('_');
+	}
+
+	/**
+	 * Retrieve the operator from the given parameters.
+	 *
+	 * @param array $parameters
+	 *
+	 * @return string
+	 */
+	protected function getQueryOperator(array $parameters): string
+	{
+		return count($parameters) === 2 ? reset($parameters) : '=';
+	}
+
+	/**
+	 * Retrieve the value from the given parameters.
+	 *
+	 * @param array $parameters
+	 *
+	 * @return array|string
+	 */
+	protected function getQueryValue(array $parameters): array|string
+	{
+		return count($parameters) === 1 ? reset($parameters) : end($parameters);
 	}
 }
