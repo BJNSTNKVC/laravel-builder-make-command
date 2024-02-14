@@ -119,41 +119,22 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
 	 */
 	protected function getMethodSignatures(): string
 	{
-		$model   = $this->getModelFromName($this->argument('model') ?? $this->argument('name'));
+		$model   = $this->getModel();
 		$columns = $this->getModelColumns($model);
 
 		return Collection::make($columns)
-			->map(function ($column) {
-				$method = Str::studly($column);
-
-				return
-					' * @method static DummyClass where' . $method . '(?string $operator = null, ?string $value = null) Add a "where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass where' . $method . '(?string $operator = null, ?string $value = null) Add a "where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method static DummyClass orWhere' . $method . '(?string $operator = null, ?string $value = null) Add an "or where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass orWhere' . $method . '(?string $operator = null, ?string $value = null) Add an "or where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method static DummyClass where' . $method . 'In(array $values) Add a "where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass where' . $method . 'In(array $values) Add a "where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method static DummyClass orWhere' . $method . 'In(array $values) Add an "or where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass orWhere' . $method . 'In(array $values) Add an "or where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method static DummyClass where' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass where' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method static DummyClass orWhere' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' * @method DummyClass orWhere' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
-					' *';
-			})
+			->map(fn(string $column) => $this->setMethodSignaturesForColumn($column))
 			->implode(PHP_EOL);
 	}
 
 	/**
-	 * Get model instance from the builder name.
-	 *
-	 * @param string $name
+	 * Get the model instance from the builder name.
 	 *
 	 * @return Model
 	 */
-	protected function getModelFromName(string $name): Model
+	protected function getModel(): Model
 	{
-		$class     = Str::replace('Builder', '', $name);
+		$class     = Str::replace('Builder', '', $this->argument('model') ?? $this->argument('name'));
 		$namespace = $this->laravel->getNamespace() . 'Models';
 		$model     = "$namespace\\$class";
 
@@ -173,6 +154,33 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
 			->getConnection()
 			->getSchemaBuilder()
 			->getColumnListing($model->getTable());
+	}
+
+	/**
+	 * Set the method signatures for the builder.
+	 *
+	 * @param string $column
+	 *
+	 * @return string
+	 */
+	protected function setMethodSignaturesForColumn(string $column): string
+	{
+		$method = Str::studly($column);
+
+		return
+			' * @method static DummyClass where' . $method . '(?string $operator = null, ?string $value = null) Add a "where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method DummyClass where' . $method . '(?string $operator = null, ?string $value = null) Add a "where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method static DummyClass orWhere' . $method . '(?string $operator = null, ?string $value = null) Add an "or where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method DummyClass orWhere' . $method . '(?string $operator = null, ?string $value = null) Add an "or where" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method static DummyClass where' . $method . 'In(array $values) Add a "where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method DummyClass where' . $method . 'In(array $values) Add a "where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method static DummyClass orWhere' . $method . 'In(array $values) Add an "or where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method DummyClass orWhere' . $method . 'In(array $values) Add an "or where in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method static DummyClass where' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method DummyClass where' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method static DummyClass orWhere' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' * @method DummyClass orWhere' . $method . 'NotIn(array $values) Add a "where not in" clause on the "' . $column . '" column to the query.' . PHP_EOL .
+			' *';
 	}
 
 	/**
