@@ -2,7 +2,6 @@
 
 namespace Bjnstnkvc\BuilderMakeCommand\Concerns;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 trait BuildsDynamicWhereQueries
@@ -68,7 +67,7 @@ trait BuildsDynamicWhereQueries
     protected function dynamicWhereIn(string $method, array $parameters): static
     {
         $column = $this->getQueryColumn($method, 'Where', 'In');
-        $values = Arr::flatten($parameters);
+        $values = $this->getQueryValue($parameters);
 
         return $this->whereIn($column, $values);
     }
@@ -84,7 +83,7 @@ trait BuildsDynamicWhereQueries
     protected function dynamicWhereNotIn(string $method, array $parameters): static
     {
         $column = $this->getQueryColumn($method, 'Where', 'NotIn');
-        $values = Arr::flatten($parameters);
+        $values = $this->getQueryValue($parameters);
 
         return $this->whereNotIn($column, $values);
     }
@@ -117,7 +116,7 @@ trait BuildsDynamicWhereQueries
     protected function dynamicOrWhereIn(string $method, array $parameters): static
     {
         $column = $this->getQueryColumn($method, 'OrWhere', 'In');
-        $values = Arr::flatten($parameters);
+        $values = $this->getQueryValue($parameters);
 
         return $this->orWhereIn($column, $values);
     }
@@ -133,7 +132,7 @@ trait BuildsDynamicWhereQueries
     protected function dynamicOrWhereNotIn(string $method, array $parameters): static
     {
         $column = $this->getQueryColumn($method, 'OrWhere', 'NotIn');
-        $values = Arr::flatten($parameters);
+        $values = $this->getQueryValue($parameters);
 
         return $this->orWhereNotIn($column, $values);
     }
