@@ -2,7 +2,7 @@
 
 namespace Bjnstnkvc\BuilderMakeCommand\Console\Commands;
 
-use Bjnstnkvc\BuilderMakeCommand\Enums\Clause;
+use Bjnstnkvc\BuilderMakeCommand\Clauses\{OrWhere, OrWhereIn, OrWhereNotIn, Where, WhereIn, WhereNotIn};
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -125,7 +125,8 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
 
         return Collection::make($columns)
             ->map(fn(string $column) => $this->setMethodSignaturesForColumn($column))
-            ->implode(PHP_EOL);
+            ->flatten()
+            ->join(PHP_EOL);
     }
 
     /**
@@ -162,20 +163,18 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      *
      * @param string $column
      *
-     * @return string
+     * @return array
      */
-    protected function setMethodSignaturesForColumn(string $column): string
+    protected function setMethodSignaturesForColumn(string $column): array
     {
-        $method = Str::studly($column);
-
-        return
-            Clause::WHERE->toMethodSignature($method, $column) .
-            Clause::OR_WHERE->toMethodSignature($method, $column) .
-            Clause::WHERE_IN->toMethodSignature($method, $column) .
-            Clause::OR_WHERE_IN->toMethodSignature($method, $column) .
-            Clause::WHERE_NOT_IN->toMethodSignature($method, $column) .
-            Clause::OR_WHERE_NOT_IN->toMethodSignature($method, $column) .
-            ' *';
+        return [
+            Where::make($column)->signature(),
+            WhereIn::make($column)->signature(),
+            WhereNotIn::make($column)->signature(),
+            OrWhere::make($column)->signature(),
+            OrWhereIn::make($column)->signature(),
+            OrWhereNotIn::make($column)->signature(),
+        ];
     }
 
     /**
