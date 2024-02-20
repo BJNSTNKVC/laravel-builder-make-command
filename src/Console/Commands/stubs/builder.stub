@@ -1,18 +1,14 @@
 <?php
 
-namespace DummyNamespace;
+namespace {{ namespace }};
 
 use Bjnstnkvc\BuilderMakeCommand\Concerns\BuildsDynamicWhereQueries;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
-DummySignature
- *
- * @mixin Builder
+{{ signature }}
  */
-class DummyClass extends Builder
+class {{ class }} extends Builder
 {
     use BuildsDynamicWhereQueries;
-
-    //
 }
