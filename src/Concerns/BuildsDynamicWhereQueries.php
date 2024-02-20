@@ -2,7 +2,11 @@
 
 namespace Bjnstnkvc\BuilderMakeCommand\Concerns;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use ReflectionClass;
 
 trait BuildsDynamicWhereQueries
 {
@@ -13,9 +17,11 @@ trait BuildsDynamicWhereQueries
      */
     private static array $methods = [
         'dynamicWhere',
+        'dynamicWhereNot',
         'dynamicWhereIn',
         'dynamicWhereNotIn',
         'dynamicOrWhere',
+        'dynamicOrWhereNot',
         'dynamicOrWhereIn',
         'dynamicOrWhereNotIn',
     ];
@@ -30,17 +36,135 @@ trait BuildsDynamicWhereQueries
      */
     public function __call($method, $parameters)
     {
-        $dynamicMethod = $this->getDynamicMethod($method);
+        $call = $this->getDynamicMethod($method);
 
-        if (in_array($dynamicMethod, self::$methods)) {
-            return $this->{$dynamicMethod}($method, $parameters);
+        if ($this->isDynamicMethod($call) && !$this->isNativeMethod($call)) {
+            return $this->{$call}($method, $parameters);
         }
 
         return parent::__call($method, $parameters);
     }
 
     /**
-     * Handles dynamic "or where" clauses to the query.
+     * Retrieve the dynamic method for the builder.
+     *
+     * @param string $method
+     *
+     * @return string
+     */
+    private function getDynamicMethod(string $method): string
+    {
+        if (Str::startsWith($method, 'where')) {
+            return $this->handleWhereMethods($method);
+        }
+
+        if (Str::startsWith($method, 'orWhere')) {
+            return $this->handleOrWhereMethods($method);
+        }
+
+        return $method;
+    }
+
+    /**
+     * Determine which dynamic "where" method should be used.
+     *
+     * @param string $method
+     *
+     * @return string
+     */
+    private function handleWhereMethods(string $method): string
+    {
+        if (!Str::endsWith($method, ['Not', 'In', 'NotIn'])) {
+            $method = 'dynamicWhere';
+        }
+
+        if (Str::endsWith($method, 'Not')) {
+            $method = 'dynamicWhereNot';
+        }
+
+        if (Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn') && !$this->isNativeMethod($method)) {
+            $method = 'dynamicWhereIn';
+        }
+
+        if (Str::endsWith($method, 'NotIn') && !$this->isNativeMethod($method)) {
+            $method = 'dynamicWhereNotIn';
+        }
+
+        return $method;
+    }
+
+    /**
+     * Determine which dynamic "or where" method should be used.
+     *
+     * @param string $method
+     *
+     * @return string
+     */
+    private function handleOrWhereMethods(string $method): string
+    {
+        if (!Str::endsWith($method, ['Not', 'In', 'NotIn'])) {
+            $method = 'dynamicOrWhere';
+        }
+
+        if (Str::endsWith($method, 'Not')) {
+            $method = 'dynamicOrWhereNot';
+        }
+
+        if (Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn') && !$this->isNativeMethod($method)) {
+            $method = 'dynamicOrWhereIn';
+        }
+
+        if (Str::endsWith($method, 'NotIn') && !$this->isNativeMethod($method)) {
+            $method = 'dynamicOrWhereNotIn';
+        }
+
+        return $method;
+    }
+
+    /**
+     * Determine if the method can b called dynamically.
+     *
+     * @param string $method
+     *
+     * @return bool
+     */
+    private function isDynamicMethod(string $method): bool
+    {
+        return in_array($method, self::$methods);
+    }
+
+    /**
+     * Determine if the method is a native Eloquent or Query builder method.
+     *
+     * @param string $method
+     *
+     * @return bool
+     */
+    private function isNativeMethod(string $method): bool
+    {
+        return in_array($method, $this->getBuilderMethods());
+    }
+
+    /**
+     * Retrieve the methods from the Eloquent and Query builder.
+     *
+     * @return array
+     */
+    private function getBuilderMethods(): array
+    {
+        $eloquent = new ReflectionClass(EloquentBuilder::class);
+        $query    = new ReflectionClass(QueryBuilder::class);
+        $methods  = [...$eloquent->getMethods(), ...$query->getMethods()];
+
+        return Collection::make($methods)
+            ->pluck('name')
+            ->unique()
+            ->reject(fn(string $value) => $value === 'dynamicWhere')
+            ->toArray();
+    }
+
+    /**
+     * Add dynamic "where" clause to the query.
      *
      * @param string $method
      * @param array  $parameters
@@ -57,7 +181,24 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Handles dynamic "where in" clauses to the query.
+     * Add dynamic "where not" clause to the query.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return static
+     */
+    protected function dynamicWhereNot(string $method, array $parameters): static
+    {
+        $column   = $this->getQueryColumn($method, 'Where', 'Not');
+        $operator = $this->getQueryOperator($parameters);
+        $value    = $this->getQueryValue($parameters);
+
+        return $this->whereNot($column, $operator, $value);
+    }
+
+    /**
+     * Add dynamic "where in" clause to the query.
      *
      * @param string $method
      * @param array  $parameters
@@ -73,7 +214,7 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Handles dynamic "where not in" clauses to the query.
+     * Add dynamic "where not in" clause to the query.
      *
      * @param string $method
      * @param array  $parameters
@@ -89,7 +230,7 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Handles dynamic "or where" clauses to the query.
+     * Add dynamic "or where" clause to the query.
      *
      * @param string $method
      * @param array  $parameters
@@ -106,7 +247,24 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Handles dynamic "or where in" clauses to the query.
+     * Add dynamic "or where not" clause to the query.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return static
+     */
+    protected function dynamicOrWhereNot(string $method, array $parameters): static
+    {
+        $column   = $this->getQueryColumn($method, 'OrWhere', 'Not');
+        $operator = $this->getQueryOperator($parameters);
+        $value    = $this->getQueryValue($parameters);
+
+        return $this->orWhereNot($column, $operator, $value);
+    }
+
+    /**
+     * Add dynamic "or where in" clause to the query.
      *
      * @param string $method
      * @param array  $parameters
@@ -122,7 +280,7 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Handles dynamic "or where not in" clauses to the query.
+     * Add dynamic "or where not in" clause to the query.
      *
      * @param string $method
      * @param array  $parameters
@@ -138,47 +296,11 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Retrieve the dynamic method for the builder.
-     *
-     * @param string $method
-     *
-     * @return string
-     */
-    protected function getDynamicMethod(string $method): string
-    {
-        if ($method !== 'where' && Str::startsWith($method, 'where') && !Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
-            $method = 'dynamicWhere';
-        }
-
-        if ($method !== 'whereIn' && Str::startsWith($method, 'where') && Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
-            $method = 'dynamicWhereIn';
-        }
-
-        if ($method !== 'whereNotIn' && Str::startsWith($method, 'where') && Str::endsWith($method, 'NotIn')) {
-            $method = 'dynamicWhereNotIn';
-        }
-
-        if ($method !== 'orWhere' && Str::startsWith($method, 'orWhere') && !Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
-            $method = 'dynamicOrWhere';
-        }
-
-        if ($method !== 'orWhereIn' && Str::startsWith($method, 'orWhere') && Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
-            $method = 'dynamicOrWhereIn';
-        }
-
-        if ($method !== 'orWhereNotIn' && Str::startsWith($method, 'orWhere') && Str::endsWith($method, 'NotIn')) {
-            $method = 'dynamicOrWhereNotIn';
-        }
-
-        return $method;
-    }
-
-    /**
      * Retrieve the column from the given method call.
      *
-     * @param string      $method
-     * @param string      $from
-     * @param string|null $to
+     * @param string  $method
+     * @param string  $from
+     * @param ?string $to
      *
      * @return string
      */
@@ -209,9 +331,9 @@ trait BuildsDynamicWhereQueries
      *
      * @param array $parameters
      *
-     * @return array|string
+     * @return array|float|int|string
      */
-    private function getQueryValue(array $parameters): array|string
+    private function getQueryValue(array $parameters): array|float|int|string
     {
         return count($parameters) === 1 ? $parameters[0] : $parameters[1];
     }
