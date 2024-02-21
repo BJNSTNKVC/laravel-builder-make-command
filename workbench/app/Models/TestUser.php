@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  *
  * @mixin Builder
  */
-class User extends Authenticatable
+class TestUser extends Authenticatable
 {
     use HasFactory;
 
