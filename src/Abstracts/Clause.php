@@ -2,8 +2,8 @@
 
 namespace Bjnstnkvc\BuilderMakeCommand\Abstracts;
 
+use BadMethodCallException;
 use Illuminate\Support\Str;
-use LogicException;
 
 abstract class Clause
 {
@@ -59,7 +59,7 @@ abstract class Clause
     public function signature(): string
     {
         if (!isset($this->signature)) {
-            throw new LogicException('The "signature" property is not set on the clause.');
+            throw new BadMethodCallException('The "$signature" property is not set on the clause.');
         }
 
         $message = " * @method static $this->signature\n * @method {{ class }} $this->signature";

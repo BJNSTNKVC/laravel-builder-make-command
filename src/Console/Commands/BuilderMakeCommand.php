@@ -36,15 +36,17 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
     /**
      * Execute the console command.
      *
-     * @return false|void
+     * @return int
      *
      * @throws FileNotFoundException
      */
-    public function handle()
+    public function handle(): int
     {
-        if (parent::handle() === false && !$this->option('force')) {
-            return false;
+        if (parent::handle() === false) {
+            return self::FAILURE;
         }
+
+        return self::SUCCESS;
     }
 
     /**

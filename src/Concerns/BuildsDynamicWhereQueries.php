@@ -38,7 +38,7 @@ trait BuildsDynamicWhereQueries
     {
         $call = $this->getDynamicMethod($method);
 
-        if ($this->isDynamicMethod($call) && !$this->isNativeMethod($call)) {
+        if ($this->isDynamicMethod($call)) {
             return $this->{$call}($method, $parameters);
         }
 
@@ -54,11 +54,11 @@ trait BuildsDynamicWhereQueries
      */
     private function getDynamicMethod(string $method): string
     {
-        if (Str::startsWith($method, 'where')) {
+        if (Str::startsWith($method, 'where') && !$this->isNativeMethod($method)) {
             return $this->handleWhereMethods($method);
         }
 
-        if (Str::startsWith($method, 'orWhere')) {
+        if (Str::startsWith($method, 'orWhere') && !$this->isNativeMethod($method)) {
             return $this->handleOrWhereMethods($method);
         }
 
@@ -66,7 +66,7 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Determine which dynamic "where" method should be used.
+     * Determine which dynamic "where" method should be called.
      *
      * @param string $method
      *
@@ -82,11 +82,11 @@ trait BuildsDynamicWhereQueries
             $method = 'dynamicWhereNot';
         }
 
-        if (Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn') && !$this->isNativeMethod($method)) {
+        if (Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
             $method = 'dynamicWhereIn';
         }
 
-        if (Str::endsWith($method, 'NotIn') && !$this->isNativeMethod($method)) {
+        if (Str::endsWith($method, 'NotIn')) {
             $method = 'dynamicWhereNotIn';
         }
 
@@ -94,7 +94,7 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Determine which dynamic "or where" method should be used.
+     * Determine which dynamic "or where" method should be called.
      *
      * @param string $method
      *
@@ -110,11 +110,11 @@ trait BuildsDynamicWhereQueries
             $method = 'dynamicOrWhereNot';
         }
 
-        if (Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn') && !$this->isNativeMethod($method)) {
+        if (Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
             $method = 'dynamicOrWhereIn';
         }
 
-        if (Str::endsWith($method, 'NotIn') && !$this->isNativeMethod($method)) {
+        if (Str::endsWith($method, 'NotIn')) {
             $method = 'dynamicOrWhereNotIn';
         }
 
@@ -122,7 +122,7 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
-     * Determine if the method can b called dynamically.
+     * Determine if the method can be called dynamically.
      *
      * @param string $method
      *
