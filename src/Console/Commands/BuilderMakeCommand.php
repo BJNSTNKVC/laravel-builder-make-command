@@ -2,7 +2,7 @@
 
 namespace Bjnstnkvc\BuilderMakeCommand\Console\Commands;
 
-use Bjnstnkvc\BuilderMakeCommand\Clauses\{OrWhere, OrWhereIn, OrWhereNotIn, Where, WhereIn, WhereNotIn};
+use Bjnstnkvc\BuilderMakeCommand\Clauses\{OrWhere, OrWhereIn, OrWhereNot, OrWhereNotIn, Where, WhereIn, WhereNot, WhereNotIn};
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -36,15 +36,17 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
     /**
      * Execute the console command.
      *
-     * @return false|void
+     * @return int
      *
      * @throws FileNotFoundException
      */
-    public function handle()
+    public function handle(): int
     {
-        if (parent::handle() === false && !$this->option('force')) {
-            return false;
+        if (parent::handle() === false) {
+            return self::FAILURE;
         }
+
+        return self::SUCCESS;
     }
 
     /**
@@ -94,7 +96,10 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
     {
         $stub = $this->files->get($this->getStub());
 
-        return $this->replaceNamespace($stub, $name)->replaceMethodSignatures($stub)->replaceClass($stub, $name);
+        return $this
+            ->replaceNamespace($stub, $name)
+            ->replaceSignatures($stub)
+            ->replaceClass($stub, $name);
     }
 
     /**
@@ -104,11 +109,11 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      *
      * @return $this
      */
-    protected function replaceMethodSignatures(string &$stub): static
+    protected function replaceSignatures(string &$stub): static
     {
         $signatures = $this->getMethodSignatures();
 
-        $stub = str_replace('DummySignature', $signatures, $stub);
+        $stub = str_replace('{{ signature }}', $signatures, $stub);
 
         return $this;
     }
@@ -136,7 +141,7 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      */
     protected function getModel(): Model
     {
-        $class     = Str::replace('Builder', '', $this->argument('model') ?? $this->argument('name'));
+        $class     = $this->argument('model') ?? Str::replace('Builder', '', $this->argument('name'));
         $namespace = $this->laravel->getNamespace() . 'Models';
         $model     = "$namespace\\$class";
 
@@ -169,9 +174,11 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
     {
         return [
             Where::make($column)->signature(),
+            WhereNot::make($column)->signature(),
             WhereIn::make($column)->signature(),
             WhereNotIn::make($column)->signature(),
             OrWhere::make($column)->signature(),
+            OrWhereNot::make($column)->signature(),
             OrWhereIn::make($column)->signature(),
             OrWhereNotIn::make($column)->signature(),
         ];
