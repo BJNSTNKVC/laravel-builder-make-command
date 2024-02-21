@@ -100,3 +100,5 @@ class User extends Authenticatable
     //
 }
 ```
+![image](https://raw.githubusercontent.com/BJNSTNKVC/laravel-builder-make-command/fc220686ab2f7dd60934ed91472cc36793f4e62e/docs/images/Intellisense%201.png?token=AY3EPM666QS6F6PPR3YGLATF2ZWTK)
+![image](https://raw.githubusercontent.com/BJNSTNKVC/laravel-builder-make-command/fc220686ab2f7dd60934ed91472cc36793f4e62e/docs/images/Intellisense%202.png?token=GHSAT0AAAAAACOJZNJZ6XM2M6UIC5L37BMAZOWNRTA)
