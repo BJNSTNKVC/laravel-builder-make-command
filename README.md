@@ -2,6 +2,14 @@
 
 Generate Eloquent Builder class for enhanced query building and model scope management.
 
+## Features
+
+- Dynamic query methods for `where`, `whereNot`, `whereIn`, `whereNotIn`, `orWhere`, `orWhereNot`, `orWhereIn`,
+  and `orWhereNotIn`.
+- Simplifies the construction of complex queries with readable method chains.
+- Automatically handles method calls that are not natively supported by Laravel's Query Builder by transforming them
+  into appropriate query conditions.
+
 ## Installation & setup
 
 You can install the package via composer:
@@ -20,10 +28,10 @@ Once the package has been installed, you can run it via CLI the same way you wou
 php artisan make:builder UserBuilder
 ```
 
-By default, the command will try figure out the name of the model from the name of the builder (E.g. UserBuilder will attempt to look for User model).
-If builder name is not provided, the command will prompt you for the name of the builder.
+By default, the command will try figure out the name of the model from the name of the builder (E.g. `UserBuilder` will
+attempt to look for `User` model).
 
-Additionally, you can pass a model name as a second argument. 
+Additionally, you can pass a model name as a second argument.
 
 ```bash
 php artisan make:builder UserBuilder User
@@ -31,7 +39,9 @@ php artisan make:builder UserBuilder User
 
 Once the command has been run, the Builder class will be created inside `app\Models\Builders` folder.
 
-In order to use it inside your models, we'll leverage Laravel [newEloquentBuilder](https://laravel.com/api/7.x/Illuminate/Database/Eloquent/Model.html#method_newEloquentBuilder) function. Add the following code to the model you've generated a builder for:
+In order to use it inside your models, we'll leverage
+Laravel [newEloquentBuilder](https://laravel.com/api/7.x/Illuminate/Database/Eloquent/Model.html#method_newEloquentBuilder)
+method by adding the following to the model you've generated a builder for:
 
 ```php
 use App\Models\Builders\UserBuilder;
@@ -49,7 +59,6 @@ public function newEloquentBuilder($query): UserBuilder
 }
 ```
 
-
 Once added, dynamic where clauses for every Model column is added as an Eloquent method.
 
 ```php
@@ -61,14 +70,6 @@ User::orWhereId(?string $operator = null, ?string $value = null);
 User::orWhereIdNot(?string $operator = null, ?string $value = null);
 User::orWhereIdIn(array $values);
 User::orWhereIdNotIn(array $values);
-User::whereName(?string $operator = null, ?string $value = null);
-User::whereNameNot(?string $operator = null, ?string $value = null);
-User::whereNameIn(array $values);
-User::whereNameNotIn(array $values);
-User::orWhereName(?string $operator = null, ?string $value = null);
-User::orWhereNameNot(?string $operator = null, ?string $value = null);
-User::orWhereNameIn(array $values);
-User::orWhereNameNotIn(array $values);
 
 // Methods for other database columns.
 ```
@@ -85,7 +86,8 @@ User::whereId('>', 1)
     ->first();
 ```
 
-In case you would like to have intellisense from your code editor of choice, you'll need to add the following doc comment to your model:
+In case you would like to have intellisense from your code editor of choice, you'll need to add the following doc
+comment to your model:
 
 ```php
 use App\Models\Builders\UserBuilder;
