@@ -7,7 +7,7 @@ Generate Eloquent Builder class for enhanced query building and model scope mana
 - Dynamic query methods for `where`, `whereNot`, `whereIn`, `whereNotIn`, `orWhere`, `orWhereNot`, `orWhereIn`,
   and `orWhereNotIn`.
 - Simplifies the construction of complex queries with readable method chains.
-- Automatically handles method calls that are not natively supported by Laravel's Query Builder by transforming them
+- Automatically handles method calls that are not natively supported by Laravel Query Builder by transforming them
   into appropriate query conditions.
 
 ## Installation & setup
@@ -19,6 +19,18 @@ composer require bjnstnkvc/builder-make-command
 ```
 
 The package will automatically register its service provider.
+
+In case you would like to change the package defaults, you can do so by publishing the config:
+
+```bash
+php artisan vendor:publish --provider="Bjnstnkvc\BuilderMakeCommand\BuilderMakeCommandServiceProvider" --tag=make-builder-config
+```
+
+or stubs
+
+```bash
+php artisan vendor:publish --provider="Bjnstnkvc\BuilderMakeCommand\BuilderMakeCommandServiceProvider" --tag=make-builder-stubs
+```
 
 ## Usage
 
@@ -35,6 +47,39 @@ Additionally, you can pass a model name as a second argument.
 
 ```bash
 php artisan make:builder UserBuilder User
+```
+
+In case the Builder already exists, you can pass an optional `--force` argument which will overwrite the existing class.
+
+```bash
+php artisan make:builder UserBuilder User --force
+```
+
+> **Note**: By forcing the Builder command, all custom methods you've added to the Builder will be overwritten so be
+> cautious.
+
+If you simply call the command, without any arguments, Laravel will prompt you for input.
+
+```bash
+php artisan make:builder
+```
+
+```bash
+What should the builder be named?
+> UserBuilder
+```
+
+```bash
+What is the model name? [User]
+> 
+```
+
+> The name of the Model has been derived from the Builder name and set as a default. Confirm by pressing ENTER or enter
+> the name of the Model.
+
+```bash
+Force overwrite? (yes/no) [no]
+> 
 ```
 
 Once the command has been run, the Builder class will be created inside `app\Models\Builders` folder.
@@ -102,5 +147,3 @@ class User extends Authenticatable
     //
 }
 ```
-![image](https://raw.githubusercontent.com/BJNSTNKVC/laravel-builder-make-command/fc220686ab2f7dd60934ed91472cc36793f4e62e/docs/images/Intellisense%201.png?token=AY3EPM666QS6F6PPR3YGLATF2ZWTK)
-![image](https://raw.githubusercontent.com/BJNSTNKVC/laravel-builder-make-command/fc220686ab2f7dd60934ed91472cc36793f4e62e/docs/images/Intellisense%202.png?token=GHSAT0AAAAAACOJZNJZ6XM2M6UIC5L37BMAZOWNRTA)

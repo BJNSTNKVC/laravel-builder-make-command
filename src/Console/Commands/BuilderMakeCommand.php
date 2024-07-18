@@ -7,8 +7,10 @@ use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputOption;
+
+use function Laravel\Prompts\{confirm, text};
 
 class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingInput
 {
@@ -17,7 +19,7 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      *
      * @var string
      */
-    protected $signature = 'make:builder {name : The name of the builder} {model? : The name of the model} {--force}';
+    protected $signature = 'make:builder {name : The name of the builder} {model : The name of the model} {force : Force override existing files} {--force}';
 
     /**
      * The console command description.
@@ -80,7 +82,19 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      */
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return "{$rootNamespace}\Models\Builders";
+        return config('builder.namespace');
+    }
+
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    protected function getOptions(): array
+    {
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the Builder already exists'],
+        ];
     }
 
     /**
@@ -108,6 +122,8 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      * @param string $stub
      *
      * @return $this
+     *
+     * @throws FileNotFoundException
      */
     protected function replaceSignatures(string &$stub): static
     {
@@ -122,13 +138,15 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      * Get the method signatures for the builder.
      *
      * @return string
+     *
+     * @throws FileNotFoundException
      */
     protected function getMethodSignatures(): string
     {
         $model   = $this->getModel();
         $columns = $this->getModelColumns($model);
 
-        return Collection::make($columns)
+        return collect($columns)
             ->map(fn(string $column) => $this->setMethodSignaturesForColumn($column))
             ->flatten()
             ->join(PHP_EOL);
@@ -138,12 +156,18 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      * Get the model instance from the builder name.
      *
      * @return Model
+     *
+     * @throws FileNotFoundException
      */
     protected function getModel(): Model
     {
         $class     = $this->argument('model') ?? Str::replace('Builder', '', $this->argument('name'));
         $namespace = $this->laravel->getNamespace() . 'Models';
         $model     = "$namespace\\$class";
+
+        if (!class_exists($model)) {
+            throw new FileNotFoundException("The model [$model] does not exist.");
+        }
 
         return new $model;
     }
@@ -192,10 +216,24 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
     protected function promptForMissingArgumentsUsing(): array
     {
         return [
-            'name' => [
-                'What should the builder be named?',
-                'E.g. PodcastBuilder',
-            ],
+            'name'  => fn() => text(
+                label      : 'What should the builder be named?',
+                placeholder: 'E.g. PodcastBuilder',
+                required   : true,
+                validate   : fn(string $value) => empty($value) ? 'The name is required.' : null,
+            ),
+            'model' => fn() => text(
+                label      : 'What is the model name?',
+                placeholder: 'E.g. Podcast',
+                default    : Str::replace('Builder', '', $this->argument('name')),
+                required   : false,
+            ),
+            'force' => fn() => confirm(
+                label   : 'Force overwrite?',
+                default : config('builder.overwrite'),
+                required: false,
+                validate: fn(bool $value) => $this->input->setOption('force', $value),
+            ),
         ];
     }
 }
