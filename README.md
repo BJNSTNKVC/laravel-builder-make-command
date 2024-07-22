@@ -74,18 +74,20 @@ What is the model name? [User]
 > 
 ```
 
-> The name of the Model has been derived from the Builder name and set as a default. Confirm by pressing ENTER or enter
-> the name of the Model.
-
 ```bash
-Force overwrite? (yes/no) [no]
+Overwrite existing file? (yes/no) [no]
 > 
 ```
+
+> The name of the Model has been derived from the Builder name and set as a default. Confirm by pressing ENTER or enter
+> the name of the Model.
+> 
+>In case the file already exists, you will be prompted whether you would like to overwrite the existing file.
 
 Once the command has been run, the Builder class will be created inside `app\Models\Builders` folder.
 
 In order to use it inside your models, we'll leverage
-Laravel [newEloquentBuilder](https://laravel.com/api/7.x/Illuminate/Database/Eloquent/Model.html#method_newEloquentBuilder)
+Laravel [newEloquentBuilder](https://laravel.com/api/11.x/Illuminate/Database/Eloquent/Model.html#method_newEloquentBuilder)
 method by adding the following to the model you've generated a builder for:
 
 ```php
@@ -125,9 +127,23 @@ Naturally, these methods can be chained on:
 User::whereId(1)
     ->orWhereNameNot('John')
     ->first();
-    
+```
+
+```php
 User::whereId('>', 1)
     ->orWhereEmail('email@example.com')
+    ->first();
+```
+
+In case you need to group several "where" clauses within parentheses in order to achieve your query's desired Logical
+Grouping, you can do the following:
+
+```php
+User::whereName('John')
+    ->where(function (UserBuilder $query) {
+        $query->whereEmail('email@example.com')
+              ->orWhereTitle('Admin');
+    })
     ->first();
 ```
 
