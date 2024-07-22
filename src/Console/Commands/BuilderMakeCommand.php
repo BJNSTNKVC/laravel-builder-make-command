@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 
-use function Laravel\Prompts\{confirm, text};
+use function Laravel\Prompts\{text};
 
 class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingInput
 {
@@ -19,7 +19,7 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      *
      * @var string
      */
-    protected $signature = 'make:builder {name : The name of the builder} {model : The name of the model} {force : Force override existing files} {--force}';
+    protected $signature = 'make:builder {name : The name of the builder} {model : The name of the model} {--force}';
 
     /**
      * The console command description.
@@ -44,11 +44,45 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      */
     public function handle(): int
     {
+        if ($this->alreadyExists($this->argument('name')) && !$this->option('force')) {
+            $force = $this->confirm('Overwrite existing file?', config('builder.overwrite'));
+
+            $this->input->setOption('force', $force);
+        }
+
         if (parent::handle() === false) {
             return self::FAILURE;
         }
 
+        $this->instructions();
+
         return self::SUCCESS;
+    }
+
+    /**
+     * Output instructions on how to use the Builder.
+     *
+     * @return void
+     */
+    protected function instructions(): void
+    {
+        $this->comment("Copy and paste the following method to your {$this->argument('model')} model:");
+
+        $this->newLine();
+
+        $this->info(
+            "/**\n* Create a new Eloquent query builder for the model\n*\n* @param \$query\n*\n* @return UserBuilder\n*/\npublic function newEloquentBuilder(\$query): UserBuilder\n{\n\treturn new UserBuilder(\$query);\n}"
+        );
+
+        $this->newLine();
+
+        $this->info(
+            "/**\n* @method static UserBuilder query() Begin querying the model.\n*\n* @mixin {$this->argument('name')}\n*/"
+        );
+
+        $this->newLine();
+
+        $this->alert("Don't forget to import the {$this->argument('name')} to your {$this->argument('model')} model.");
     }
 
     /**
@@ -129,7 +163,7 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
     {
         $signatures = $this->getMethodSignatures();
 
-        $stub = str_replace('{{ signature }}', $signatures, $stub);
+        $stub = Str::replace('{{ signature }}', $signatures, $stub);
 
         return $this;
     }
@@ -227,12 +261,6 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
                 placeholder: 'E.g. Podcast',
                 default    : Str::replace('Builder', '', $this->argument('name')),
                 required   : false,
-            ),
-            'force' => fn() => confirm(
-                label   : 'Force overwrite?',
-                default : config('builder.overwrite'),
-                required: false,
-                validate: fn(bool $value) => $this->input->setOption('force', $value),
             ),
         ];
     }

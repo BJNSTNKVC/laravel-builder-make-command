@@ -4,14 +4,34 @@ use App\Models\Builders\TestUserBuilder;
 use App\Models\TestUser;
 use Bjnstnkvc\BuilderMakeCommand\Tests\TestCase;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Testing\PendingCommand;
 
 class BuilderMakeCommandTest extends TestCase
 {
+    /**
+     * Question for the Builder name.
+     *
+     * @var string
+     */
+    protected const BUILDER_QUESTION = 'What should the builder be named?';
+
+    /**
+     * Question for the Model name.
+     *
+     * @var string
+     */
+    protected const MODEL_QUESTION = 'What is the model name?';
+
+    /**
+     * Question for force overwrite.
+     *
+     * @var string
+     */
+    protected const FORCE_QUESTION = 'Overwrite existing file?';
+
     public function test_that_the_command_name_argument_is_required()
     {
         $this->artisan('make:builder')
-            ->expectsQuestion('What should the builder be named?', null)
+            ->expectsQuestion(self::BUILDER_QUESTION, null)
             ->assertFailed();
     }
 
@@ -19,41 +39,79 @@ class BuilderMakeCommandTest extends TestCase
     {
         $this->expectException(FileNotFoundException::class);
 
-        $this->makeBuilder('NonExistingBuilder')->execute();
+        $this->artisan('make:builder')
+            ->expectsQuestion(self::BUILDER_QUESTION, 'NonExistingBuilder')
+            ->expectsQuestion(self::MODEL_QUESTION, 'NonExisting')
+            ->assertSuccessful();
     }
 
     public function test_that_the_command_name_argument_does_not_need_to_be_a_derivative_of_model_name_if_model_argument_is_passed()
     {
-        $this->makeBuilder('NonExistingBuilder', 'TestUser')->assertSuccessful();
+        $this->artisan('make:builder')
+            ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'NonExistingBuilder')
+            ->expectsQuestion(self::MODEL_QUESTION, 'TestUser')
+            ->assertSuccessful();
 
-        $this->cleanUp('NonExistingBuilder');
+        self::cleanUp($builder);
     }
 
     public function test_that_the_command_creates_a_builder()
     {
-        $this->makeBuilder('UserBuilder', 'TestUser')->assertSuccessful();
+        $this->artisan('make:builder')
+            ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'UserBuilder')
+            ->expectsQuestion(self::MODEL_QUESTION, 'TestUser')
+            ->assertSuccessful();
 
-        $this->assertFileExists(app_path('Models/Builders/UserBuilder.php'), 'Builder was not created');
+        $this->assertFileExists(app_path("Models/Builders/$builder.php"), 'Builder was not created');
 
-        $this->cleanUp('UserBuilder');
+        self::cleanUp($builder);
     }
 
     public function test_that_the_command_will_not_overwrite_an_existing_builder()
     {
-        $this->makeBuilder('UserBuilder', 'TestUser')->assertSuccessful();
+        $this->artisan('make:builder')
+            ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'UserBuilder')
+            ->expectsQuestion(self::MODEL_QUESTION, $model = 'TestUser')
+            ->assertSuccessful();
 
-        $this->makeBuilder('UserBuilder', 'TestUser')->assertFailed();
+        $this->artisan('make:builder')
+            ->expectsQuestion(self::BUILDER_QUESTION, $builder)
+            ->expectsQuestion(self::MODEL_QUESTION, $model)
+            ->expectsQuestion(self::FORCE_QUESTION, false)
+            ->assertFailed();
 
-        $this->cleanUp('UserBuilder');
+        self::cleanUp($builder);
     }
 
     public function test_that_the_command_will_overwrite_an_existing_builder_when_force_option_is_passed()
     {
-        $this->makeBuilder('UserBuilder', 'TestUser')->assertSuccessful();
+        $this->artisan('make:builder')
+            ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'UserBuilder')
+            ->expectsQuestion(self::MODEL_QUESTION, $model = 'TestUser')
+            ->assertSuccessful();
 
-        $this->makeBuilder('UserBuilder', 'TestUser', true)->assertSuccessful();
+        $this->artisan('make:builder')
+            ->expectsQuestion(self::BUILDER_QUESTION, $builder)
+            ->expectsQuestion(self::MODEL_QUESTION, $model)
+            ->expectsQuestion(self::FORCE_QUESTION, 'yes')
+            ->assertSuccessful();
 
-        $this->cleanUp('UserBuilder');
+        self::cleanUp($builder);
+    }
+
+    public function test_that_the_command_outputs_instructions_on_how_to_use_the_builder()
+    {
+        $this->artisan('make:builder')
+            ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'UserBuilder')
+            ->expectsQuestion(self::MODEL_QUESTION, $model = 'TestUser')
+            ->assertSuccessful()
+            ->expectsOutputToContain("Copy and paste the following method to your $model model")
+            ->expectsOutputToContain(
+                "/**\n* Create a new Eloquent query builder for the model\n*\n* @param \$query\n*\n* @return $builder\n*/\npublic function newEloquentBuilder(\$query): $builder\n{\n\treturn new $builder(\$query);\n}"
+            )
+            ->expectsOutputToContain("/**\n* @method static $builder query() Begin querying the model.\n*\n* @mixin $builder\n*/");
+
+        self::cleanUp($builder);
     }
 
     public function test_that_the_model_eloquent_builder_is_an_instance_of_generated_builder()
@@ -144,26 +202,8 @@ class BuilderMakeCommandTest extends TestCase
      *
      * @return void
      */
-    protected function cleanUp(string $builder): void
+    protected static function cleanUp(string $builder): void
     {
         unlink(base_path("app/Models/Builders/$builder.php"));
-    }
-
-    /**
-     * Call the make:builder command.
-     *
-     * @param string|null $builder
-     * @param string|null $model
-     * @param bool|null   $force
-     * @param array       $defaults
-     *
-     * @return PendingCommand|int
-     */
-    protected function makeBuilder(?string $builder = null, ?string $model = null, ?bool $force = false, array $defaults = []): PendingCommand|int
-    {
-        return $this->artisan('make:builder', $defaults)
-            ->expectsQuestion('What should the builder be named?', $builder)
-            ->expectsQuestion('What is the model name?', $model)
-            ->expectsQuestion('Force overwrite?', $force);
     }
 }
