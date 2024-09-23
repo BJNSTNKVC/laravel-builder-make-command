@@ -159,6 +159,24 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
+    public function test_that_the_builder_dynamic_where_like_method_can_be_called()
+    {
+        $this->assertEquals(
+            expected: TestUser::query()->whereIdLike(1)->toRawSql(),
+            actual  : TestUser::query()->whereLike('id', 1)->toRawSql(),
+            message : 'The dynamic "where like" cannot be called.'
+        );
+    }
+
+    public function test_that_the_builder_dynamic_where_not_like_method_can_be_called()
+    {
+        $this->assertEquals(
+            expected: TestUser::query()->whereIdNotLike(1)->toRawSql(),
+            actual  : TestUser::query()->whereNotLike('id', 1)->toRawSql(),
+            message : 'The dynamic "where not like" cannot be called.'
+        );
+    }
+
     public function test_that_the_builder_dynamic_or_where_method_can_be_called()
     {
         $this->assertEquals(
@@ -194,6 +212,25 @@ class BuilderMakeCommandTest extends TestCase
             message : 'The dynamic "or where not in" cannot be called.'
         );
     }
+
+    public function test_that_the_builder_dynamic_or_where_like_method_can_be_called()
+    {
+        $this->assertEquals(
+            expected: TestUser::query()->orWhereIdLike(1)->toRawSql(),
+            actual  : TestUser::query()->orWhereLike('id', 1)->toRawSql(),
+            message : 'The dynamic "where like" cannot be called.'
+        );
+    }
+
+    public function test_that_the_builder_dynamic_or_where_not_like_method_can_be_called()
+    {
+        $this->assertEquals(
+            expected: TestUser::query()->orWhereIdNotLike(1)->toRawSql(),
+            actual  : TestUser::query()->orWhereNotLike('id', 1)->toRawSql(),
+            message : 'The dynamic "where not like" cannot be called.'
+        );
+    }
+
 
     /**
      * Remove the generated Builder class.

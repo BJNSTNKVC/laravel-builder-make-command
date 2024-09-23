@@ -2,7 +2,7 @@
 
 namespace Bjnstnkvc\BuilderMakeCommand\Console\Commands;
 
-use Bjnstnkvc\BuilderMakeCommand\Clauses\{OrWhere, OrWhereIn, OrWhereNot, OrWhereNotIn, Where, WhereIn, WhereNot, WhereNotIn};
+use Bjnstnkvc\BuilderMakeCommand\Clauses\{OrWhere, OrWhereIn, OrWhereLike, OrWhereNot, OrWhereNotIn, OrWhereNotLike, Where, WhereIn, WhereLike, WhereNot, WhereNotIn, WhereNotLike};
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -235,10 +235,14 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
             WhereNot::make($column)->signature(),
             WhereIn::make($column)->signature(),
             WhereNotIn::make($column)->signature(),
+            WhereLike::make($column)->signature(),
+            WhereNotLike::make($column)->signature(),
             OrWhere::make($column)->signature(),
             OrWhereNot::make($column)->signature(),
             OrWhereIn::make($column)->signature(),
             OrWhereNotIn::make($column)->signature(),
+            OrWhereLike::make($column)->signature(),
+            OrWhereNotLike::make($column)->signature(),
         ];
     }
 

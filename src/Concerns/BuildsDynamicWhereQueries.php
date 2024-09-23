@@ -2,6 +2,7 @@
 
 namespace Bjnstnkvc\BuilderMakeCommand\Concerns;
 
+use Bjnstnkvc\BuilderMakeCommand\Clauses\{Where, WhereIn, WhereLike, WhereNot, WhereNotIn, WhereNotLike};
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
@@ -20,10 +21,14 @@ trait BuildsDynamicWhereQueries
         'dynamicWhereNot',
         'dynamicWhereIn',
         'dynamicWhereNotIn',
+        'dynamicWhereLike',
+        'dynamicWhereNotLike',
         'dynamicOrWhere',
         'dynamicOrWhereNot',
         'dynamicOrWhereIn',
         'dynamicOrWhereNotIn',
+        'dynamicOrWhereLike',
+        'dynamicOrWhereNotLike',
     ];
 
     /**
@@ -74,20 +79,28 @@ trait BuildsDynamicWhereQueries
      */
     private function handleWhereMethods(string $method): string
     {
-        if (!Str::endsWith($method, ['Not', 'In', 'NotIn'])) {
+        if (Where::is($method)) {
             $method = 'dynamicWhere';
         }
 
-        if (Str::endsWith($method, 'Not')) {
+        if (WhereNot::is($method)) {
             $method = 'dynamicWhereNot';
         }
 
-        if (Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
+        if (WhereIn::is($method)) {
             $method = 'dynamicWhereIn';
         }
 
-        if (Str::endsWith($method, 'NotIn')) {
+        if (WhereNotIn::is($method)) {
             $method = 'dynamicWhereNotIn';
+        }
+
+        if (WhereLike::is($method)) {
+            $method = 'dynamicWhereLike';
+        }
+
+        if (WhereNotLike::is($method)) {
+            $method = 'dynamicWhereNotLike';
         }
 
         return $method;
@@ -102,20 +115,28 @@ trait BuildsDynamicWhereQueries
      */
     private function handleOrWhereMethods(string $method): string
     {
-        if (!Str::endsWith($method, ['Not', 'In', 'NotIn'])) {
+        if (Where::is($method)) {
             $method = 'dynamicOrWhere';
         }
 
-        if (Str::endsWith($method, 'Not')) {
+        if (WhereNot::is($method)) {
             $method = 'dynamicOrWhereNot';
         }
 
-        if (Str::endsWith($method, 'In') && !Str::endsWith($method, 'NotIn')) {
+        if (WhereIn::is($method)) {
             $method = 'dynamicOrWhereIn';
         }
 
-        if (Str::endsWith($method, 'NotIn')) {
+        if (WhereNotIn::is($method)) {
             $method = 'dynamicOrWhereNotIn';
+        }
+
+        if (WhereLike::is($method)) {
+            $method = 'dynamicOrWhereLike';
+        }
+
+        if (WhereNotLike::is($method)) {
+            $method = 'dynamicOrWhereNotLike';
         }
 
         return $method;
@@ -230,6 +251,40 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
+     * Add dynamic "where like" clause to the query.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return static
+     */
+    protected function dynamicWhereLike(string $method, array $parameters): static
+    {
+        $column        = $this->getQueryColumn($method, 'Where', 'Like');
+        $value         = $this->getQueryValue($parameters);
+        $caseSensitive = $this->getQueryCaseSensitive($parameters);
+
+        return $this->whereLike($column, $value, $caseSensitive);
+    }
+
+    /**
+     * Add dynamic "where not like" clause to the query.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return static
+     */
+    protected function dynamicWhereNotLike(string $method, array $parameters): static
+    {
+        $column        = $this->getQueryColumn($method, 'Where', 'NotLike');
+        $value         = $this->getQueryValue($parameters);
+        $caseSensitive = $this->getQueryCaseSensitive($parameters);
+
+        return $this->whereNotLike($column, $value, $caseSensitive);
+    }
+
+    /**
      * Add dynamic "or where" clause to the query.
      *
      * @param string $method
@@ -296,6 +351,40 @@ trait BuildsDynamicWhereQueries
     }
 
     /**
+     * Add dynamic "or where" clause to the query.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return static
+     */
+    protected function dynamicOrWhereLike(string $method, array $parameters): static
+    {
+        $column        = $this->getQueryColumn($method, 'OrWhere', 'Like');
+        $value         = $this->getQueryValue($parameters);
+        $caseSensitive = $this->getQueryCaseSensitive($parameters);
+
+        return $this->orWhereLike($column, $value, $caseSensitive);
+    }
+
+    /**
+     * Add dynamic "or where not" clause to the query.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return static
+     */
+    protected function dynamicOrWhereNotLike(string $method, array $parameters): static
+    {
+        $column        = $this->getQueryColumn($method, 'OrWhere', 'NotLike');
+        $value         = $this->getQueryValue($parameters);
+        $caseSensitive = $this->getQueryCaseSensitive($parameters);
+
+        return $this->orWhereNotLike($column, $value, $caseSensitive);
+    }
+
+    /**
      * Retrieve the column from the given method call.
      *
      * @param string  $method
@@ -336,5 +425,17 @@ trait BuildsDynamicWhereQueries
     private function getQueryValue(array $parameters): array|float|int|string
     {
         return count($parameters) === 1 ? $parameters[0] : $parameters[1];
+    }
+
+    /**
+     * Retrieve whether the query should be case-sensitive.
+     *
+     * @param array $parameters
+     *
+     * @return bool
+     */
+    private function getQueryCaseSensitive(array $parameters): bool
+    {
+        return count($parameters) === 2 ? $parameters[1] : false;
     }
 }

@@ -15,4 +15,16 @@ class ValidClause extends Clause
      * @var string
      */
     protected string $signature = 'Method: "%1$s" Column: "%2$s".';
+
+    /**
+     * Determine if the clause is the given method.
+     *
+     * @param string $method
+     *
+     * @return bool
+     */
+    public static function is(string $method): bool
+    {
+        return $method === 'valid';
+    }
 }

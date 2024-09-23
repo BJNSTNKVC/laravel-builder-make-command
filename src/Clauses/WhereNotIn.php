@@ -3,12 +3,15 @@
 namespace Bjnstnkvc\BuilderMakeCommand\Clauses;
 
 use Bjnstnkvc\BuilderMakeCommand\Abstracts\Clause;
+use Bjnstnkvc\BuilderMakeCommand\Traits\IsDynamicWhereNotInClause;
 
 /**
  * @method static static make(string $column) Make a new clause instance.
  */
 class WhereNotIn extends Clause
 {
+    use IsDynamicWhereNotInClause;
+
     /**
      * The method signature for the clause.
      *
