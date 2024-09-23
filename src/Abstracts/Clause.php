@@ -62,8 +62,17 @@ abstract class Clause
             throw new BadMethodCallException('The "$signature" property is not set on the clause.');
         }
 
-        $message = " * @method static $this->signature\n * @method {{ class }} $this->signature";
+        $message = " * @method static $this->signature\n * @method self $this->signature";
 
         return sprintf($message, $this->method, $this->column);
     }
+
+    /**
+     * Determine if the clause is the given method.
+     * 
+     * @param string $method
+     *
+     * @return bool
+     */
+    abstract public static function is(string $method): bool; 
 }

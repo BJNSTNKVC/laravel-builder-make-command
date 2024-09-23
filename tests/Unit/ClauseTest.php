@@ -39,9 +39,15 @@ class ClauseTest extends TestCase
         $signature = ValidClause::make($column)->signature();
 
         $this->assertSame(
-            expected: " * @method static Method: \"$method\" Column: \"$column\".\n * @method {{ class }} Method: \"$method\" Column: \"$column\".",
+            expected: " * @method static Method: \"$method\" Column: \"$column\".\n * @method self Method: \"$method\" Column: \"$column\".",
             actual  : $signature,
             message : 'The clause signature is not generated correctly.'
         );
+    }
+
+    public function test_that_the_clause_correctly_identifies_dynamic_where_methods(): void
+    {
+        $this->assertTrue(ValidClause::is('valid'));
+        $this->assertFalse(InvalidClause::is('valid'));
     }
 }
