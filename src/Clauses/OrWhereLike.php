@@ -17,5 +17,5 @@ class OrWhereLike extends Clause
      *
      * @var string
      */
-    protected string $signature = 'orWhere%1$sLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "%2$s" column to the query.';
+    protected string $signature = 'orWhere%1$sLike(string $value, bool $caseSensitive = false) Add an "or where like" clause on the "%2$s" column to the query.';
 }
