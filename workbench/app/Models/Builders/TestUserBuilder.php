@@ -14,10 +14,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self whereIdIn(array $values) Add a "where in" clause on the "id" column to the query.
  * @method static whereIdNotIn(array $values) Add a "where not in" clause on the "id" column to the query.
  * @method self whereIdNotIn(array $values) Add a "where not in" clause on the "id" column to the query.
- * @method static whereIdLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "id" column to the query.
- * @method self whereIdLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "id" column to the query.
- * @method static whereIdNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "id" column to the query.
- * @method self whereIdNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "id" column to the query.
+ * @method static whereIdLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "id" column to the query.
+ * @method self whereIdLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "id" column to the query.
+ * @method static whereIdNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "id" column to the query.
+ * @method self whereIdNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "id" column to the query.
  * @method static orWhereId(?string $operator = null, ?string $value = null) Add an "or where" clause on the "id" column to the query.
  * @method self orWhereId(?string $operator = null, ?string $value = null) Add an "or where" clause on the "id" column to the query.
  * @method static orWhereIdNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "id" column to the query.
@@ -28,8 +28,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self orWhereIdNotIn(array $values) Add a "where not in" clause on the "id" column to the query.
  * @method static orWhereIdLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "id" column to the query.
  * @method self orWhereIdLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "id" column to the query.
- * @method static orWhereIdNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "id" column to the query.
- * @method self orWhereIdNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "id" column to the query.
+ * @method static orWhereIdNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "id" column to the query.
+ * @method self orWhereIdNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "id" column to the query.
  * @method static whereName(?string $operator = null, ?string $value = null) Add a "where" clause on the "name" column to the query.
  * @method self whereName(?string $operator = null, ?string $value = null) Add a "where" clause on the "name" column to the query.
  * @method static whereNameNot(?string $operator = null, ?string $value = null) Add a "where not" clause on the "name" column to the query.
@@ -38,10 +38,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self whereNameIn(array $values) Add a "where in" clause on the "name" column to the query.
  * @method static whereNameNotIn(array $values) Add a "where not in" clause on the "name" column to the query.
  * @method self whereNameNotIn(array $values) Add a "where not in" clause on the "name" column to the query.
- * @method static whereNameLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "name" column to the query.
- * @method self whereNameLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "name" column to the query.
- * @method static whereNameNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "name" column to the query.
- * @method self whereNameNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "name" column to the query.
+ * @method static whereNameLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "name" column to the query.
+ * @method self whereNameLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "name" column to the query.
+ * @method static whereNameNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "name" column to the query.
+ * @method self whereNameNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "name" column to the query.
  * @method static orWhereName(?string $operator = null, ?string $value = null) Add an "or where" clause on the "name" column to the query.
  * @method self orWhereName(?string $operator = null, ?string $value = null) Add an "or where" clause on the "name" column to the query.
  * @method static orWhereNameNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "name" column to the query.
@@ -52,8 +52,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self orWhereNameNotIn(array $values) Add a "where not in" clause on the "name" column to the query.
  * @method static orWhereNameLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "name" column to the query.
  * @method self orWhereNameLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "name" column to the query.
- * @method static orWhereNameNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "name" column to the query.
- * @method self orWhereNameNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "name" column to the query.
+ * @method static orWhereNameNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "name" column to the query.
+ * @method self orWhereNameNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "name" column to the query.
  * @method static whereEmail(?string $operator = null, ?string $value = null) Add a "where" clause on the "email" column to the query.
  * @method self whereEmail(?string $operator = null, ?string $value = null) Add a "where" clause on the "email" column to the query.
  * @method static whereEmailNot(?string $operator = null, ?string $value = null) Add a "where not" clause on the "email" column to the query.
@@ -62,10 +62,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self whereEmailIn(array $values) Add a "where in" clause on the "email" column to the query.
  * @method static whereEmailNotIn(array $values) Add a "where not in" clause on the "email" column to the query.
  * @method self whereEmailNotIn(array $values) Add a "where not in" clause on the "email" column to the query.
- * @method static whereEmailLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "email" column to the query.
- * @method self whereEmailLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "email" column to the query.
- * @method static whereEmailNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "email" column to the query.
- * @method self whereEmailNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "email" column to the query.
+ * @method static whereEmailLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "email" column to the query.
+ * @method self whereEmailLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "email" column to the query.
+ * @method static whereEmailNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "email" column to the query.
+ * @method self whereEmailNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "email" column to the query.
  * @method static orWhereEmail(?string $operator = null, ?string $value = null) Add an "or where" clause on the "email" column to the query.
  * @method self orWhereEmail(?string $operator = null, ?string $value = null) Add an "or where" clause on the "email" column to the query.
  * @method static orWhereEmailNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "email" column to the query.
@@ -76,8 +76,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self orWhereEmailNotIn(array $values) Add a "where not in" clause on the "email" column to the query.
  * @method static orWhereEmailLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "email" column to the query.
  * @method self orWhereEmailLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "email" column to the query.
- * @method static orWhereEmailNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "email" column to the query.
- * @method self orWhereEmailNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "email" column to the query.
+ * @method static orWhereEmailNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "email" column to the query.
+ * @method self orWhereEmailNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "email" column to the query.
  * @method static whereEmailVerifiedAt(?string $operator = null, ?string $value = null) Add a "where" clause on the "email_verified_at" column to the query.
  * @method self whereEmailVerifiedAt(?string $operator = null, ?string $value = null) Add a "where" clause on the "email_verified_at" column to the query.
  * @method static whereEmailVerifiedAtNot(?string $operator = null, ?string $value = null) Add a "where not" clause on the "email_verified_at" column to the query.
@@ -86,10 +86,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self whereEmailVerifiedAtIn(array $values) Add a "where in" clause on the "email_verified_at" column to the query.
  * @method static whereEmailVerifiedAtNotIn(array $values) Add a "where not in" clause on the "email_verified_at" column to the query.
  * @method self whereEmailVerifiedAtNotIn(array $values) Add a "where not in" clause on the "email_verified_at" column to the query.
- * @method static whereEmailVerifiedAtLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "email_verified_at" column to the query.
- * @method self whereEmailVerifiedAtLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "email_verified_at" column to the query.
- * @method static whereEmailVerifiedAtNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "email_verified_at" column to the query.
- * @method self whereEmailVerifiedAtNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "email_verified_at" column to the query.
+ * @method static whereEmailVerifiedAtLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "email_verified_at" column to the query.
+ * @method self whereEmailVerifiedAtLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "email_verified_at" column to the query.
+ * @method static whereEmailVerifiedAtNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "email_verified_at" column to the query.
+ * @method self whereEmailVerifiedAtNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "email_verified_at" column to the query.
  * @method static orWhereEmailVerifiedAt(?string $operator = null, ?string $value = null) Add an "or where" clause on the "email_verified_at" column to the query.
  * @method self orWhereEmailVerifiedAt(?string $operator = null, ?string $value = null) Add an "or where" clause on the "email_verified_at" column to the query.
  * @method static orWhereEmailVerifiedAtNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "email_verified_at" column to the query.
@@ -100,8 +100,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self orWhereEmailVerifiedAtNotIn(array $values) Add a "where not in" clause on the "email_verified_at" column to the query.
  * @method static orWhereEmailVerifiedAtLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "email_verified_at" column to the query.
  * @method self orWhereEmailVerifiedAtLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "email_verified_at" column to the query.
- * @method static orWhereEmailVerifiedAtNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "email_verified_at" column to the query.
- * @method self orWhereEmailVerifiedAtNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "email_verified_at" column to the query.
+ * @method static orWhereEmailVerifiedAtNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "email_verified_at" column to the query.
+ * @method self orWhereEmailVerifiedAtNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "email_verified_at" column to the query.
  * @method static wherePassword(?string $operator = null, ?string $value = null) Add a "where" clause on the "password" column to the query.
  * @method self wherePassword(?string $operator = null, ?string $value = null) Add a "where" clause on the "password" column to the query.
  * @method static wherePasswordNot(?string $operator = null, ?string $value = null) Add a "where not" clause on the "password" column to the query.
@@ -110,10 +110,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self wherePasswordIn(array $values) Add a "where in" clause on the "password" column to the query.
  * @method static wherePasswordNotIn(array $values) Add a "where not in" clause on the "password" column to the query.
  * @method self wherePasswordNotIn(array $values) Add a "where not in" clause on the "password" column to the query.
- * @method static wherePasswordLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "password" column to the query.
- * @method self wherePasswordLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "password" column to the query.
- * @method static wherePasswordNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "password" column to the query.
- * @method self wherePasswordNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "password" column to the query.
+ * @method static wherePasswordLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "password" column to the query.
+ * @method self wherePasswordLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "password" column to the query.
+ * @method static wherePasswordNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "password" column to the query.
+ * @method self wherePasswordNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "password" column to the query.
  * @method static orWherePassword(?string $operator = null, ?string $value = null) Add an "or where" clause on the "password" column to the query.
  * @method self orWherePassword(?string $operator = null, ?string $value = null) Add an "or where" clause on the "password" column to the query.
  * @method static orWherePasswordNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "password" column to the query.
@@ -124,8 +124,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self orWherePasswordNotIn(array $values) Add a "where not in" clause on the "password" column to the query.
  * @method static orWherePasswordLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "password" column to the query.
  * @method self orWherePasswordLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "password" column to the query.
- * @method static orWherePasswordNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "password" column to the query.
- * @method self orWherePasswordNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "password" column to the query.
+ * @method static orWherePasswordNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "password" column to the query.
+ * @method self orWherePasswordNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "password" column to the query.
  * @method static whereRememberToken(?string $operator = null, ?string $value = null) Add a "where" clause on the "remember_token" column to the query.
  * @method self whereRememberToken(?string $operator = null, ?string $value = null) Add a "where" clause on the "remember_token" column to the query.
  * @method static whereRememberTokenNot(?string $operator = null, ?string $value = null) Add a "where not" clause on the "remember_token" column to the query.
@@ -134,10 +134,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self whereRememberTokenIn(array $values) Add a "where in" clause on the "remember_token" column to the query.
  * @method static whereRememberTokenNotIn(array $values) Add a "where not in" clause on the "remember_token" column to the query.
  * @method self whereRememberTokenNotIn(array $values) Add a "where not in" clause on the "remember_token" column to the query.
- * @method static whereRememberTokenLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "remember_token" column to the query.
- * @method self whereRememberTokenLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "remember_token" column to the query.
- * @method static whereRememberTokenNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "remember_token" column to the query.
- * @method self whereRememberTokenNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "remember_token" column to the query.
+ * @method static whereRememberTokenLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "remember_token" column to the query.
+ * @method self whereRememberTokenLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "remember_token" column to the query.
+ * @method static whereRememberTokenNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "remember_token" column to the query.
+ * @method self whereRememberTokenNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "remember_token" column to the query.
  * @method static orWhereRememberToken(?string $operator = null, ?string $value = null) Add an "or where" clause on the "remember_token" column to the query.
  * @method self orWhereRememberToken(?string $operator = null, ?string $value = null) Add an "or where" clause on the "remember_token" column to the query.
  * @method static orWhereRememberTokenNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "remember_token" column to the query.
@@ -148,8 +148,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self orWhereRememberTokenNotIn(array $values) Add a "where not in" clause on the "remember_token" column to the query.
  * @method static orWhereRememberTokenLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "remember_token" column to the query.
  * @method self orWhereRememberTokenLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "remember_token" column to the query.
- * @method static orWhereRememberTokenNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "remember_token" column to the query.
- * @method self orWhereRememberTokenNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "remember_token" column to the query.
+ * @method static orWhereRememberTokenNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "remember_token" column to the query.
+ * @method self orWhereRememberTokenNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "remember_token" column to the query.
  * @method static whereCreatedAt(?string $operator = null, ?string $value = null) Add a "where" clause on the "created_at" column to the query.
  * @method self whereCreatedAt(?string $operator = null, ?string $value = null) Add a "where" clause on the "created_at" column to the query.
  * @method static whereCreatedAtNot(?string $operator = null, ?string $value = null) Add a "where not" clause on the "created_at" column to the query.
@@ -158,10 +158,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self whereCreatedAtIn(array $values) Add a "where in" clause on the "created_at" column to the query.
  * @method static whereCreatedAtNotIn(array $values) Add a "where not in" clause on the "created_at" column to the query.
  * @method self whereCreatedAtNotIn(array $values) Add a "where not in" clause on the "created_at" column to the query.
- * @method static whereCreatedAtLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "created_at" column to the query.
- * @method self whereCreatedAtLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "created_at" column to the query.
- * @method static whereCreatedAtNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "created_at" column to the query.
- * @method self whereCreatedAtNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "created_at" column to the query.
+ * @method static whereCreatedAtLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "created_at" column to the query.
+ * @method self whereCreatedAtLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "created_at" column to the query.
+ * @method static whereCreatedAtNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "created_at" column to the query.
+ * @method self whereCreatedAtNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "created_at" column to the query.
  * @method static orWhereCreatedAt(?string $operator = null, ?string $value = null) Add an "or where" clause on the "created_at" column to the query.
  * @method self orWhereCreatedAt(?string $operator = null, ?string $value = null) Add an "or where" clause on the "created_at" column to the query.
  * @method static orWhereCreatedAtNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "created_at" column to the query.
@@ -172,8 +172,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self orWhereCreatedAtNotIn(array $values) Add a "where not in" clause on the "created_at" column to the query.
  * @method static orWhereCreatedAtLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "created_at" column to the query.
  * @method self orWhereCreatedAtLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "created_at" column to the query.
- * @method static orWhereCreatedAtNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "created_at" column to the query.
- * @method self orWhereCreatedAtNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "created_at" column to the query.
+ * @method static orWhereCreatedAtNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "created_at" column to the query.
+ * @method self orWhereCreatedAtNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "created_at" column to the query.
  * @method static whereUpdatedAt(?string $operator = null, ?string $value = null) Add a "where" clause on the "updated_at" column to the query.
  * @method self whereUpdatedAt(?string $operator = null, ?string $value = null) Add a "where" clause on the "updated_at" column to the query.
  * @method static whereUpdatedAtNot(?string $operator = null, ?string $value = null) Add a "where not" clause on the "updated_at" column to the query.
@@ -182,10 +182,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self whereUpdatedAtIn(array $values) Add a "where in" clause on the "updated_at" column to the query.
  * @method static whereUpdatedAtNotIn(array $values) Add a "where not in" clause on the "updated_at" column to the query.
  * @method self whereUpdatedAtNotIn(array $values) Add a "where not in" clause on the "updated_at" column to the query.
- * @method static whereUpdatedAtLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "updated_at" column to the query.
- * @method self whereUpdatedAtLike(string $value = null, bool $caseSensitive = false) Add a "where like" clause on the "updated_at" column to the query.
- * @method static whereUpdatedAtNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "updated_at" column to the query.
- * @method self whereUpdatedAtNotLike(string $value = null, bool $caseSensitive = false) Add a "where not like" clause on the "updated_at" column to the query.
+ * @method static whereUpdatedAtLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "updated_at" column to the query.
+ * @method self whereUpdatedAtLike(string $value, bool $caseSensitive = false) Add a "where like" clause on the "updated_at" column to the query.
+ * @method static whereUpdatedAtNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "updated_at" column to the query.
+ * @method self whereUpdatedAtNotLike(string $value, bool $caseSensitive = false) Add a "where not like" clause on the "updated_at" column to the query.
  * @method static orWhereUpdatedAt(?string $operator = null, ?string $value = null) Add an "or where" clause on the "updated_at" column to the query.
  * @method self orWhereUpdatedAt(?string $operator = null, ?string $value = null) Add an "or where" clause on the "updated_at" column to the query.
  * @method static orWhereUpdatedAtNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "updated_at" column to the query.
@@ -196,8 +196,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method self orWhereUpdatedAtNotIn(array $values) Add a "where not in" clause on the "updated_at" column to the query.
  * @method static orWhereUpdatedAtLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "updated_at" column to the query.
  * @method self orWhereUpdatedAtLike(?string $operator = null, ?string $value = null) Add an "or where like" clause on the "updated_at" column to the query.
- * @method static orWhereUpdatedAtNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "updated_at" column to the query.
- * @method self orWhereUpdatedAtNotLike(?string $operator = null, ?string $value = null) Add an "or where not like" clause on the "updated_at" column to the query.
+ * @method static orWhereUpdatedAtNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "updated_at" column to the query.
+ * @method self orWhereUpdatedAtNotLike(string $value, bool $caseSensitive = false) Add an "or where not like" clause on the "updated_at" column to the query.
  */
 class TestUserBuilder extends Builder
 {
