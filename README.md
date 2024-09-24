@@ -113,18 +113,18 @@ User::whereId(?string $operator = null, ?string $value = null);
 User::whereIdNot(?string $operator = null, ?string $value = null);
 User::whereIdIn(array $values);
 User::whereIdNotIn(array $values);
-User::whereIdLike(string $value, bool $caseSensitive = false)
-User::whereIdLike(string $value, bool $caseSensitive = false)
-User::whereIdNotLike(string $value, bool $caseSensitive = false)
-User::whereIdNotLike(string $value, bool $caseSensitive = false)
+User::whereIdLike(string $value, bool $caseSensitive = false);
+User::whereIdLike(string $value, bool $caseSensitive = false);
+User::whereIdNotLike(string $value, bool $caseSensitive = false);
+User::whereIdNotLike(string $value, bool $caseSensitive = false);
 User::orWhereId(?string $operator = null, ?string $value = null);
 User::orWhereIdNot(?string $operator = null, ?string $value = null);
 User::orWhereIdIn(array $values);
 User::orWhereIdNotIn(array $values);
-User::orWhereIdLike(string $value, bool $caseSensitive = false)
-User::orWhereIdLike(string $value, bool $caseSensitive = false)
-User::orWhereIdNotLike(string $value, bool $caseSensitive = false)
-User::orWhereIdNotLike(string $value, bool $caseSensitive = false)
+User::orWhereIdLike(string $value, bool $caseSensitive = false);
+User::orWhereIdLike(string $value, bool $caseSensitive = false);
+User::orWhereIdNotLike(string $value, bool $caseSensitive = false);
+User::orWhereIdNotLike(string $value, bool $caseSensitive = false);
 
 // Methods for other database columns.
 ```
