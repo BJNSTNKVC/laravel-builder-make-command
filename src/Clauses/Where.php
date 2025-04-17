@@ -17,5 +17,5 @@ class Where extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$s(?string $operator = null, ?string $value = null) Add a "where" clause on the "%2$s" column to the query.';
+    protected string $signature = 'where%1$s(?string $operator = null, ?string $value = null, string $boolean = \'and\') Add a "where" clause on the "%2$s" column to the query.';
 }

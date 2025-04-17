@@ -17,5 +17,5 @@ class WhereNotIn extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$sNotIn(array $values) Add a "where not in" clause on the "%2$s" column to the query.';
+    protected string $signature = 'where%1$sNotIn(array $values, string $boolean = \'and\') Add a "where not in" clause on the "%2$s" column to the query.';
 }

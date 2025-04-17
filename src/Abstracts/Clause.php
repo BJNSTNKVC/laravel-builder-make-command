@@ -52,6 +52,20 @@ abstract class Clause
     }
 
     /**
+     * Get the 'dynamic where' clause method name.
+     *
+     * @param string $method
+     *
+     * @return string
+     */
+    public static function clause(string $method): string
+    {
+        return Str::of(static::class)
+            ->basename()
+            ->prepend(Str::startsWith($method, 'or') ? 'dynamicOr' : 'dynamic');
+    }
+
+    /**
      * Set the method signature for the clause.
      *
      * @return string
@@ -69,10 +83,10 @@ abstract class Clause
 
     /**
      * Determine if the clause is the given method.
-     * 
+     *
      * @param string $method
      *
      * @return bool
      */
-    abstract public static function is(string $method): bool; 
+    abstract public static function is(string $method): bool;
 }
