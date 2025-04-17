@@ -17,5 +17,5 @@ class WhereIn extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$sIn(array $values, string $boolean = \'and\') Add a "where in" clause on the "%2$s" column to the query.';
+    protected string $signature = 'where%1$sIn(array $values, string $boolean = \'and\', $boolean = \'and\') Add a "where in" clause on the "%2$s" column to the query.';
 }
