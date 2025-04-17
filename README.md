@@ -4,8 +4,7 @@ Generate Eloquent Builder class for enhanced query building and model scope mana
 
 ## Features
 
-- Dynamic query methods for `where`, `whereNot`, `whereIn`, `whereNotIn`, `orWhere`, `orWhereNot`, `orWhereIn`,
-  and `orWhereNotIn`.
+- Dynamic query methods for `where`, `whereIn`, `whereLike`, `whereNot`, `whereNotIn`, `whereNotLike`, `orWhere`, `orWhereIn`, `orWhereLike`, `orWhereNot`, `orWhereNotIn` and `orWhereNotLike`.
 - Simplifies the construction of complex queries with readable method chains.
 - Automatically handles method calls that are not natively supported by Laravel Query Builder by transforming them
   into appropriate query conditions.
@@ -81,7 +80,7 @@ Overwrite existing file? (yes/no) [no]
 
 > The name of the Model has been derived from the Builder name and set as a default. Confirm by pressing ENTER or enter
 > the name of the Model.
-> 
+>
 >In case the file already exists, you will be prompted whether you would like to overwrite the existing file.
 
 Once the command has been run, the Builder class will be created inside `app\Models\Builders` folder.

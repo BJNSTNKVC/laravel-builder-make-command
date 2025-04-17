@@ -2,10 +2,9 @@
 
 namespace Bjnstnkvc\BuilderMakeCommand\Tests\Unit;
 
-use App\Clauses\InvalidClause;
-use App\Clauses\ValidClause;
 use ArgumentCountError;
 use BadMethodCallException;
+use Bjnstnkvc\BuilderMakeCommand\Abstracts\Clause;
 use Bjnstnkvc\BuilderMakeCommand\Tests\TestCase;
 use TypeError;
 
@@ -49,5 +48,48 @@ class ClauseTest extends TestCase
     {
         $this->assertTrue(ValidClause::is('valid'));
         $this->assertFalse(InvalidClause::is('valid'));
+    }
+}
+
+/**
+ * @method static static make(string $column) Make a new clause instance.
+ */
+class ValidClause extends Clause
+{
+    /**
+     * The method signature for the clause.
+     *
+     * @var string
+     */
+    protected string $signature = 'Method: "%1$s" Column: "%2$s".';
+
+    /**
+     * Determine if the clause is the given method.
+     *
+     * @param string $method
+     *
+     * @return bool
+     */
+    public static function is(string $method): bool
+    {
+        return $method === 'valid';
+    }
+}
+
+/**
+ * @method static static make(string $column) Make a new clause instance.
+ */
+class InvalidClause extends Clause
+{
+    /**
+     * Determine if the clause is the given method.
+     *
+     * @param string $method
+     *
+     * @return bool
+     */
+    public static function is(string $method): bool
+    {
+        return $method === 'invalid';
     }
 }
