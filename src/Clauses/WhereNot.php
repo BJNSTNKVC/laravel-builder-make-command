@@ -17,5 +17,5 @@ class WhereNot extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$sNot(?string $operator = null, ?string $value = null) Add a "where not" clause on the "%2$s" column to the query.';
+    protected string $signature = 'where%1$sNot(?string $operator = null, ?string $value = null, $boolean = \'and\') Add a "where not" clause on the "%2$s" column to the query.';
 }

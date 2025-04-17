@@ -86,7 +86,7 @@ Overwrite existing file? (yes/no) [no]
 Once the command has been run, the Builder class will be created inside `app\Models\Builders` folder.
 
 In order to use it inside your models, we'll leverage
-Laravel [newEloquentBuilder](https://laravel.com/api/11.x/Illuminate/Database/Eloquent/Model.html#method_newEloquentBuilder)
+Laravel [newEloquentBuilder](https://laravel.com/api/12.x/Illuminate/Database/Eloquent/Model.html#method_newEloquentBuilder)
 method by adding the following to the model you've generated a builder for:
 
 ```php
@@ -146,6 +146,8 @@ In case you need to group several "where" clauses within parentheses in order to
 Grouping, you can do the following:
 
 ```php
+use App\Models\Builders\UserBuilder;
+
 User::whereName('John')
     ->where(function (UserBuilder $query) {
         $query->whereEmail('email@example.com')

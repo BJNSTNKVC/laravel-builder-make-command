@@ -33,4 +33,20 @@ abstract class TestCase extends BaseTestCase
     {
         $app->setBasePath(__DIR__ . '/../workbench');
     }
+
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations(): void
+    {
+        $this->loadMigrationsFrom(database_path('database/migrations'));
+
+        $this->artisan('migrate', ['--database' => 'testing']);
+
+        $this->artisan('db:seed', ['--database' => 'testing']);
+
+        $this->beforeApplicationDestroyed(fn() => $this->artisan('migrate:rollback', ['--database' => 'testing']));
+    }
 }

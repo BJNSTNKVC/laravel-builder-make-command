@@ -7,7 +7,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | This value determines the namespace where the builder file will be
-    | generated. 
+    | generated.
+    |
     */
 
     'namespace' => 'App\\Models\\Builders',
