@@ -109,6 +109,7 @@ class BuilderMakeCommandTest extends TestCase
             ->expectsOutputToContain(
                 "/**\n* Create a new Eloquent query builder for the model\n*\n* @param \$query\n*\n* @return $builder\n*/\npublic function newEloquentBuilder(\$query): $builder\n{\n\treturn new $builder(\$query);\n}"
             )
+            ->expectsOutputToContain("You can also add the following doc comment to your $model model to enhance your editors intellisense:")
             ->expectsOutputToContain("/**\n* @method static $builder query() Begin querying the model.\n*\n* @mixin $builder\n*/");
 
         self::cleanUp($builder);
