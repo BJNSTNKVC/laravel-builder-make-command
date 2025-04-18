@@ -39,7 +39,7 @@ class ClauseTest extends TestCase
         $signature = ValidClause::make($column)->signature();
 
         $this->assertSame(
-            expected: " * @method static Method: $method Parameters: ?string \$operator = null Column: $column.\n * @method self Method: $method Parameters: ?string \$operator = null Column: $column.",
+            expected: " * @method self Method: $method Parameters: ?string \$operator = null Column: $column.\n * @method static self Method: $method Parameters: ?string \$operator = null Column: $column.",
             actual  : $signature,
             message : 'The clause signature is not generated correctly.'
         );
