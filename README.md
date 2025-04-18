@@ -108,21 +108,17 @@ public function newEloquentBuilder($query): UserBuilder
 Once added, dynamic where clauses for every Model column is added as an Eloquent method.
 
 ```php
-User::whereId(?string $operator = null, ?string $value = null);
-User::whereIdNot(?string $operator = null, ?string $value = null);
-User::whereIdIn(array $values);
-User::whereIdNotIn(array $values);
-User::whereIdLike(string $value, bool $caseSensitive = false);
-User::whereIdLike(string $value, bool $caseSensitive = false);
-User::whereIdNotLike(string $value, bool $caseSensitive = false);
-User::whereIdNotLike(string $value, bool $caseSensitive = false);
-User::orWhereId(?string $operator = null, ?string $value = null);
-User::orWhereIdNot(?string $operator = null, ?string $value = null);
+User::whereId(mixed $operator = null, mixed $value = null, string $boolean = 'and');
+User::whereIdNot(mixed $operator = null, mixed $value = null, string $boolean = 'and');
+User::whereIdIn(array $values, string $boolean = 'and', bool $not = false);
+User::whereIdNotIn(array $values, string $boolean = 'and');
+User::whereIdLike(string $value, bool $caseSensitive = false, string $boolean = 'and', bool $not = false);
+User::whereIdNotLike(string $value, bool $caseSensitive = false, string $boolean = 'and', bool $not = false);
+User::orWhereId(mixed $operator = null, mixed $value = null);
+User::orWhereIdNot(mixed $operator = null, mixed $value = null);
 User::orWhereIdIn(array $values);
 User::orWhereIdNotIn(array $values);
 User::orWhereIdLike(string $value, bool $caseSensitive = false);
-User::orWhereIdLike(string $value, bool $caseSensitive = false);
-User::orWhereIdNotLike(string $value, bool $caseSensitive = false);
 User::orWhereIdNotLike(string $value, bool $caseSensitive = false);
 
 // Methods for other database columns.

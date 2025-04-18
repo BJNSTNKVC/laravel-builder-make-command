@@ -13,9 +13,20 @@ class WhereIn extends Clause
     use IsDynamicWhereInClause;
 
     /**
+     * The parameters for the clause.
+     *
+     * @var array
+     */
+    protected array $parameters = [
+        'values'  => ['type' => 'array'],
+        'boolean' => ['type' => 'string', 'value' => 'and'],
+        'not'     => ['type' => 'bool', 'value' => false],
+    ];
+
+    /**
      * The method signature for the clause.
      *
      * @var string
      */
-    protected string $signature = 'where%1$sIn(array $values, string $boolean = \'and\', $boolean = \'and\') Add a "where in" clause on the "%2$s" column to the query.';
+    protected string $signature = 'where%1$sIn(%2$s) Add a "where in" clause on the "%3$s" column to the query.';
 }

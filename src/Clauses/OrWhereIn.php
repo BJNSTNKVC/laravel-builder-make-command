@@ -13,9 +13,18 @@ class OrWhereIn extends Clause
     use IsDynamicWhereInClause;
 
     /**
+     * The parameters for the clause.
+     *
+     * @var array
+     */
+    protected array $parameters = [
+        'values' => ['type' => 'array'],
+    ];
+
+    /**
      * The method signature for the clause.
      *
      * @var string
      */
-    protected string $signature = 'orWhere%1$sIn(array $values) Add an "or where in" clause on the "%2$s" column to the query.';
+    protected string $signature = 'orWhere%1$sIn(%2$s) Add an "or where in" clause on the "%3$s" column to the query.';
 }

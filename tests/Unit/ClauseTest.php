@@ -33,12 +33,13 @@ class ClauseTest extends TestCase
 
     public function test_that_the_clause_generates_a_valid_signature(): void
     {
-        $column    = 'column';
-        $method    = 'Column';
+        $column = 'column';
+        $method = 'Column';
+
         $signature = ValidClause::make($column)->signature();
 
         $this->assertSame(
-            expected: " * @method static Method: \"$method\" Column: \"$column\".\n * @method self Method: \"$method\" Column: \"$column\".",
+            expected: " * @method static Method: $method Parameters: ?string \$operator = null Column: $column.\n * @method self Method: $method Parameters: ?string \$operator = null Column: $column.",
             actual  : $signature,
             message : 'The clause signature is not generated correctly.'
         );
@@ -57,11 +58,18 @@ class ClauseTest extends TestCase
 class ValidClause extends Clause
 {
     /**
+     * The parameters for the clause.
+     */
+    protected array $parameters = [
+        'operator' => ['type' => '?string', 'value' => null],
+    ];
+
+    /**
      * The method signature for the clause.
      *
      * @var string
      */
-    protected string $signature = 'Method: "%1$s" Column: "%2$s".';
+    protected string $signature = 'Method: %1$s Parameters: %2$s Column: %3$s.';
 
     /**
      * Determine if the clause is the given method.

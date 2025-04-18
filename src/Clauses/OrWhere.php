@@ -14,11 +14,21 @@ class OrWhere extends Clause
     use IsDynamicWhereClause;
 
     /**
+     * The parameters for the clause.
+     *
+     * @var array
+     */
+    protected array $parameters = [
+        'operator' => ['type' => 'mixed', 'value' => null],
+        'value'    => ['type' => 'mixed', 'value' => null],
+    ];
+
+    /**
      * The method signature for the clause.
      *
      * @var string
      */
-    protected string $signature = 'orWhere%1$s(?string $operator = null, ?string $value = null) Add an "or where" clause on the "%2$s" column to the query.';
+    protected string $signature = 'orWhere%1$s(%2$s) Add an "or where" clause on the "%3$s" column to the query.';
 
     /**
      * Determine if the clause is the given method.
