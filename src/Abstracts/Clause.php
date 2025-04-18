@@ -8,11 +8,11 @@ use Illuminate\Support\Str;
 abstract class Clause
 {
     /**
-     * The method signature for the clause.
+     * The method for the clause.
      *
      * @var string
      */
-    protected string $signature;
+    private string $method;
 
     /**
      * The column for the clause.
@@ -22,11 +22,16 @@ abstract class Clause
     private string $column;
 
     /**
-     * The method for the clause.
+     * The parameters for the clause.
+     */
+    protected array $parameters = [];
+
+    /**
+     * The method signature for the clause.
      *
      * @var string
      */
-    private string $method;
+    protected string $signature;
 
     /**
      * Create a new clause instance.
@@ -76,9 +81,31 @@ abstract class Clause
             throw new BadMethodCallException('The "$signature" property is not set on the clause.');
         }
 
-        $message = " * @method static $this->signature\n * @method self $this->signature";
+        $parameters = collect($this->parameters)
+            ->map(function (array $options, string $parameter) {
+                $parameter = "$$parameter";
 
-        return sprintf($message, $this->method, $this->column);
+                if (array_key_exists('type', $options)) {
+                    $parameter = "{$options['type']} $parameter";
+                }
+
+                if (array_key_exists('value', $options)) {
+                    $value = match (gettype($options['value'])) {
+                        'NULL'    => 'null',
+                        'boolean' => $options['value'] ? 'true' : 'false',
+                        default   => "'$options[value]'",
+                    };
+
+                    $parameter = "$parameter = $value";
+                }
+
+                return $parameter;
+            })
+            ->implode(', ');
+
+        $message = " * @method self $this->signature\n * @method static self $this->signature";
+
+        return sprintf($message, $this->method, $parameters, $this->column);
     }
 
     /**

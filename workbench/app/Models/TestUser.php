@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 /**
  * @method static TestUserBuilder query() Begin querying the model.
  *
- * @mixin Builder
+ * @mixin TestUserBuilder
  */
 class TestUser extends Authenticatable
 {

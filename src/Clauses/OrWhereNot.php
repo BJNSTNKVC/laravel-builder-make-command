@@ -13,9 +13,19 @@ class OrWhereNot extends Clause
     use IsDynamicWhereNotClause;
 
     /**
+     * The parameters for the clause.
+     *
+     * @var array
+     */
+    protected array $parameters = [
+        'operator' => ['type' => 'mixed', 'value' => null],
+        'value'    => ['type' => 'mixed', 'value' => null],
+    ];
+
+    /**
      * The method signature for the clause.
      *
      * @var string
      */
-    protected string $signature = 'orWhere%1$sNot(?string $operator = null, ?string $value = null) Add an "or where not" clause on the "%2$s" column to the query.';
+    protected string $signature = 'orWhere%1$sNot(%2$s) Add an "or where not" clause on the "%3$s" column to the query.';
 }
