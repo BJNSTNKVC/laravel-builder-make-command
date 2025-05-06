@@ -6,32 +6,37 @@ use ArgumentCountError;
 use BadMethodCallException;
 use Bjnstnkvc\BuilderMakeCommand\Abstracts\Clause;
 use Bjnstnkvc\BuilderMakeCommand\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TypeError;
 
 class ClauseTest extends TestCase
 {
-    public function test_that_the_column_property_has_to_be_set_on_the_clause(): void
+    #[Test]
+    public function the_column_property_has_to_be_set_on_the_clause(): void
     {
         $this->expectException(ArgumentCountError::class);
 
         InvalidClause::make();
     }
 
-    public function test_that_the_column_property_has_to_be_a_string(): void
+    #[Test]
+    public function the_column_property_has_to_be_a_string(): void
     {
         $this->expectException(TypeError::class);
 
         InvalidClause::make(null);
     }
 
-    public function test_that_the_signature_property_has_to_be_set_on_the_clause(): void
+    #[Test]
+    public function the_signature_property_has_to_be_set_on_the_clause(): void
     {
         $this->expectException(BadMethodCallException::class);
 
         InvalidClause::make('column')->signature();
     }
 
-    public function test_that_the_clause_generates_a_valid_signature(): void
+    #[Test]
+    public function the_clause_generates_a_valid_signature(): void
     {
         $column = 'column';
         $method = 'Column';
@@ -45,7 +50,8 @@ class ClauseTest extends TestCase
         );
     }
 
-    public function test_that_the_clause_correctly_identifies_dynamic_where_methods(): void
+    #[Test]
+    public function the_clause_correctly_identifies_dynamic_where_methods(): void
     {
         $this->assertTrue(ValidClause::is('valid'));
         $this->assertFalse(InvalidClause::is('valid'));

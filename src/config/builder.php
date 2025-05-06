@@ -24,4 +24,17 @@ return [
     */
 
     'overwrite' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Create Mixin Builder Files
+    |--------------------------------------------------------------------------
+    |
+    | This option determines whether the builder file should be included
+    | as a mixin.
+    |
+    */
+
+    'mixin' => false,
+
 ];

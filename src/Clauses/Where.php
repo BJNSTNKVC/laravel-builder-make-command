@@ -28,5 +28,5 @@ class Where extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$s(%2$s) Add a "where" clause on the "%3$s" column to the query.';
+    protected string $signature = 'where%1$s(%2$s)';
 }

@@ -27,5 +27,5 @@ class OrWhereNotLike extends Clause
      *
      * @var string
      */
-    protected string $signature = 'orWhere%1$sNotLike(%2$s) Add an "or where not like" clause on the "%3$s" column to the query.';
+    protected string $signature = 'orWhere%1$sNotLike(%2$s)';
 }

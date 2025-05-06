@@ -27,5 +27,5 @@ class WhereNotIn extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$sNotIn(%2$s) Add a "where not in" clause on the "%3$s" column to the query.';
+    protected string $signature = 'where%1$sNotIn(%2$s)';
 }

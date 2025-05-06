@@ -8,6 +8,7 @@ use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use ReflectionClass;
 use Symfony\Component\Console\Input\InputOption;
 
 use function Laravel\Prompts\{text};
@@ -19,7 +20,7 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      *
      * @var string
      */
-    protected $signature = 'make:builder {name : The name of the builder} {model : The name of the model} {--force}';
+    protected $signature = 'make:builder {name : The name of the builder} {model : The name of the model} {--force} {--mixin}';
 
     /**
      * The console command description.
@@ -44,8 +45,11 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      */
     public function handle(): int
     {
+        $this->input->setOption('force', $this->option('force') ?? config('builder.force'));
+        $this->input->setOption('mixin', $this->option('mixin') ?? config('builder.mixin'));
+
         if ($this->alreadyExists($this->argument('name')) && !$this->option('force')) {
-            $force = $this->confirm('Overwrite existing file?', config('builder.overwrite'));
+            $force = $this->confirm('Overwrite existing file?');
 
             $this->input->setOption('force', $force);
         }
@@ -54,35 +58,51 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
             return self::FAILURE;
         }
 
-        $this->instructions();
+        $this->setDocComment();
 
         return self::SUCCESS;
     }
 
     /**
-     * Output instructions on how to use the Builder.
+     * Set the Builder Doc comments depending on the chosen options.
      *
      * @return void
+     *
+     * @throws FileNotFoundException
      */
-    protected function instructions(): void
+    protected function setDocComment(): void
     {
-        $this->comment("Copy and paste the following method to your {$this->argument('model')} model:");
+        $reflection = new ReflectionClass($this->getModel());
+        $path       = $reflection->getFileName();
+        $doc        = $reflection->getDocComment();
+        $class      = $reflection->getShortName();
+        $name       = $this->getNameInput();
+        $builder    = config('builder.namespace') . '\\' . $name;
+        $import     = $this->option('mixin') ? "{$name}Mixin" : $name;
+        $query      = "/**\n * @method static $name query() Begin querying the model.\n";
+        $content    = $this->files->get($path);
 
-        $this->newLine();
+        if ($this->option('mixin')) {
+            $replace = "$query *\n * @mixin {$name}Mixin\n */";
+        } else {
+            $replace = "$query *\n * @mixin $name\n */";
+        }
 
-        $this->info("/**\n* Create a new Eloquent query builder for the model\n*\n* @param \$query\n*\n* @return UserBuilder\n*/\npublic function newEloquentBuilder(\$query): UserBuilder\n{\n\treturn new UserBuilder(\$query);\n}");
+        if (!$doc) {
+            $content = Str::replace("class $class", "{$replace}\nclass $class", $content);
+        } else {
+            $content = Str::replace($doc, $replace, $content);
+        }
 
-        $this->newLine();
+        if (Str::doesntContain($content, "use $builder;")) {
+            $content = Str::replaceFirst('use ', "use $builder;\r\nuse ", $content);
+        }
 
-        $this->comment("You can also add the following doc comment to your {$this->argument('model')} model to enhance your editors intellisense:");
+        if (Str::doesntContain($content, "use $import;")) {
+            $content = Str::replaceFirst('use ', "use $import;\r\nuse ", $content);
+        }
 
-        $this->newLine();
-
-        $this->info("/**\n* @method static UserBuilder query() Begin querying the model.\n*\n* @mixin {$this->argument('name')}\n*/");
-
-        $this->newLine();
-
-        $this->alert("Don't forget to import the {$this->argument('name')} to your {$this->argument('model')} model.");
+        $this->files->put($path, $content);
     }
 
     /**
@@ -142,12 +162,54 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
      */
     protected function buildClass($name): string
     {
+        if ($this->option('mixin')) {
+            $this->buildMixin($name);
+        }
+
         $stub = $this->files->get($this->getStub());
 
         return $this
             ->replaceNamespace($stub, $name)
             ->replaceSignatures($stub)
             ->replaceClass($stub, $name);
+    }
+
+    /**
+     * Build the mixin with the given name.
+     *
+     * @param string $name
+     *
+     * @return void
+     * @throws FileNotFoundException
+     */
+    protected function buildMixin(string $name): void
+    {
+        $class      = basename($name);
+        $mixin      = "{$this->getNameInput()}Mixin";
+        $signatures = $this->getMethodSignatures();
+        $namespace  = config('builder.namespace');
+        $stub       = "<?php\n\nnamespace $namespace {\n\n/**\n$signatures\n */\nclass $mixin {}\n}\n";
+
+        if ($this->files->exists($path = base_path('.builder.mixin.php'))) {
+            require_once $path;
+
+            $content = $this->files->get($path);
+
+            if (class_exists("\App\Models\Builders\\$mixin")) {
+                $pattern     = "/\/\*\*(?:(?!\/\*\*)[\s\S])*?\*\/\s*class\s+$mixin\s*\{[^{}]*\}/s";
+                $replacement = "/**\n$signatures\n */\nclass $mixin {}";
+            } else {
+                $pattern     = "/\}(\s*)$/s";
+                $replacement = "\n/**\n$signatures\n */\nclass $mixin {}\n}\n";
+            }
+
+            $stub = Str::replaceMatches($pattern, $replacement, $content);
+        }
+
+        $stub = Str::replaceMatches(['/^\/\*\*/m', '/^ \* ?/m', '/^ \*\/$/m', '/^class ?/m'], "    $0", $stub);
+        $stub = Str::replace('self', $class, $stub);
+
+        $this->files->put(base_path('.builder.mixin.php'), $stub);
     }
 
     /**
@@ -162,8 +224,9 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
     protected function replaceSignatures(string &$stub): static
     {
         $signatures = $this->getMethodSignatures();
+        $mixin      = " * @mixin {$this->getNameInput()}Mixin";
 
-        $stub = Str::replace('{{ signature }}', $signatures, $stub);
+        $stub = Str::replace('{{ signature }}', $this->option('mixin') ? $mixin : $signatures, $stub);
 
         return $this;
     }
@@ -264,7 +327,7 @@ class BuilderMakeCommand extends GeneratorCommand implements PromptsForMissingIn
                 label      : 'What is the model name?',
                 placeholder: 'E.g. Podcast',
                 default    : Str::replace('Builder', '', $this->argument('name')),
-                required   : false,
+                required   : true,
             ),
         ];
     }

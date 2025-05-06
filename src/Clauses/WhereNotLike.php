@@ -29,5 +29,5 @@ class WhereNotLike extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$sNotLike(%2$s) Add a "where not like" clause on the "%3$s" column to the query.';
+    protected string $signature = 'where%1$sNotLike(%2$s)';
 }

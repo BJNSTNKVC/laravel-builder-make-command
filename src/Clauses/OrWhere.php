@@ -28,7 +28,7 @@ class OrWhere extends Clause
      *
      * @var string
      */
-    protected string $signature = 'orWhere%1$s(%2$s) Add an "or where" clause on the "%3$s" column to the query.';
+    protected string $signature = 'orWhere%1$s(%2$s)';
 
     /**
      * Determine if the clause is the given method.

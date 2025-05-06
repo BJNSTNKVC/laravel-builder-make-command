@@ -26,5 +26,5 @@ class OrWhereIn extends Clause
      *
      * @var string
      */
-    protected string $signature = 'orWhere%1$sIn(%2$s) Add an "or where in" clause on the "%3$s" column to the query.';
+    protected string $signature = 'orWhere%1$sIn(%2$s)';
 }
