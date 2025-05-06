@@ -29,5 +29,5 @@ class WhereLike extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$sLike(%2$s) Add a "where like" clause on the "%3$s" column to the query.';
+    protected string $signature = 'where%1$sLike(%2$s)';
 }

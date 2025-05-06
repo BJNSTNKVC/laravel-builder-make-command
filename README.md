@@ -85,23 +85,14 @@ Overwrite existing file? (yes/no) [no]
 
 Once the command has been run, the Builder class will be created inside `app\Models\Builders` folder.
 
-In order to use it inside your models, we'll leverage
-Laravel [newEloquentBuilder](https://laravel.com/api/12.x/Illuminate/Database/Eloquent/Model.html#method_newEloquentBuilder)
-method by adding the following to the model you've generated a builder for:
+In order to use it inside your models, add `HasDynamicBuilder` trait to your model:
 
 ```php
-use App\Models\Builders\UserBuilder;
+use Bjnstnkvc\BuilderMakeCommand\Concerns\HasDynamicBuilder;
 
-/**
- * Create a new Eloquent query builder for the model
- *
- * @param $query
- *
- * @return UserBuilder
- */
-public function newEloquentBuilder($query): UserBuilder
+class User extends Model
 {
-    return new UserBuilder($query);
+    use HasDynamicBuilder;
 }
 ```
 
@@ -152,19 +143,10 @@ User::whereName('John')
     ->first();
 ```
 
-In case you would like to have intellisense from your code editor of choice, you'll need to add the following doc
-comment to your model:
+In case you would like to generate the Builder method signatures as a mixin, you can use the `--mixin` flag:
 
-```php
-use App\Models\Builders\UserBuilder;
-
-/**
- * @method static UserBuilder query() Begin querying the model.
- *
- * @mixin UserBuilder
- */
-class User extends Authenticatable
-{
-    //
-}
+```bash
+php artisan make:builder UserBuilder User --mixin
 ```
+
+The mixin will be created inside `.builder.mixin.php` file and automatically imported into the Builder class.

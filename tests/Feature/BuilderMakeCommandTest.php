@@ -4,6 +4,8 @@ use App\Models\Builders\TestUserBuilder;
 use App\Models\TestUser;
 use Bjnstnkvc\BuilderMakeCommand\Tests\TestCase;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Filesystem\Filesystem;
+use PHPUnit\Framework\Attributes\Test;
 
 class BuilderMakeCommandTest extends TestCase
 {
@@ -28,14 +30,35 @@ class BuilderMakeCommandTest extends TestCase
      */
     protected const FORCE_QUESTION = 'Overwrite existing file?';
 
-    public function test_that_the_command_name_argument_is_required()
+    /**
+     * Test Filesystem instance.
+     *
+     * @var Filesystem
+     */
+    protected static Filesystem $fs;
+
+    /**
+     * Set up the test environment.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        self::$fs = new Filesystem();
+    }
+
+    #[Test]
+    public function it_name_argument_is_required()
     {
         $this->artisan('make:builder')
             ->expectsQuestion(self::BUILDER_QUESTION, null)
             ->assertFailed();
     }
 
-    public function test_that_the_command_name_argument_needs_to_be_a_derivative_of_model_name_if_model_argument_is_not_passed()
+    #[Test]
+    public function it_name_argument_needs_to_be_a_derivative_of_model_name_if_model_argument_is_not_passed()
     {
         $this->expectException(FileNotFoundException::class);
 
@@ -45,7 +68,8 @@ class BuilderMakeCommandTest extends TestCase
             ->assertSuccessful();
     }
 
-    public function test_that_the_command_name_argument_does_not_need_to_be_a_derivative_of_model_name_if_model_argument_is_passed()
+    #[Test]
+    public function it_name_argument_does_not_need_to_be_a_derivative_of_model_name_if_model_argument_is_passed()
     {
         $this->artisan('make:builder')
             ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'NonExistingBuilder')
@@ -55,7 +79,8 @@ class BuilderMakeCommandTest extends TestCase
         self::cleanUp($builder);
     }
 
-    public function test_that_the_command_creates_a_builder()
+    #[Test]
+    public function it_creates_a_builder()
     {
         $this->artisan('make:builder')
             ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'UserBuilder')
@@ -67,7 +92,8 @@ class BuilderMakeCommandTest extends TestCase
         self::cleanUp($builder);
     }
 
-    public function test_that_the_command_will_not_overwrite_an_existing_builder()
+    #[Test]
+    public function it_will_not_overwrite_an_existing_builder()
     {
         $this->artisan('make:builder')
             ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'UserBuilder')
@@ -83,7 +109,8 @@ class BuilderMakeCommandTest extends TestCase
         self::cleanUp($builder);
     }
 
-    public function test_that_the_command_will_overwrite_an_existing_builder_when_force_option_is_passed()
+    #[Test]
+    public function it_will_overwrite_an_existing_builder_when_force_option_is_passed()
     {
         $this->artisan('make:builder')
             ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'UserBuilder')
@@ -99,23 +126,24 @@ class BuilderMakeCommandTest extends TestCase
         self::cleanUp($builder);
     }
 
-    public function test_that_the_command_outputs_instructions_on_how_to_use_the_builder()
+    #[Test]
+    public function it_creates_a_mixin()
     {
-        $this->artisan('make:builder')
+        $path = base_path('.builder.mixin.php');
+
+        $this->artisan('make:builder --mixin')
             ->expectsQuestion(self::BUILDER_QUESTION, $builder = 'UserBuilder')
-            ->expectsQuestion(self::MODEL_QUESTION, $model = 'TestUser')
-            ->assertSuccessful()
-            ->expectsOutputToContain("Copy and paste the following method to your $model model")
-            ->expectsOutputToContain(
-                "/**\n* Create a new Eloquent query builder for the model\n*\n* @param \$query\n*\n* @return $builder\n*/\npublic function newEloquentBuilder(\$query): $builder\n{\n\treturn new $builder(\$query);\n}"
-            )
-            ->expectsOutputToContain("You can also add the following doc comment to your $model model to enhance your editors intellisense:")
-            ->expectsOutputToContain("/**\n* @method static $builder query() Begin querying the model.\n*\n* @mixin $builder\n*/");
+            ->expectsQuestion(self::MODEL_QUESTION, 'TestUser')
+            ->assertSuccessful();
+
+        $this->assertFileExists($path, '.builder.mixin.php was not created');
+        $this->assertStringContainsString('class UserBuilderMixin {}', self::$fs->get($path));
 
         self::cleanUp($builder);
     }
 
-    public function test_that_the_model_eloquent_builder_is_an_instance_of_generated_builder()
+    #[Test]
+    public function the_model_eloquent_builder_is_an_instance_of_generated_builder()
     {
         $this->assertInstanceOf(
             expected: TestUserBuilder::class,
@@ -124,7 +152,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_where_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_where_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->whereId(1)->toRawSql(),
@@ -133,7 +162,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_where_not_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_where_not_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->whereIdNot(1)->toRawSql(),
@@ -142,7 +172,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_where_in_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_where_in_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->whereIdIn([1, 2])->toRawSql(),
@@ -151,7 +182,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_where_not_in_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_where_not_in_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->whereIdNotIn([1, 2])->toRawSql(),
@@ -160,7 +192,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_where_like_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_where_like_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->whereIdLike(1)->toRawSql(),
@@ -169,7 +202,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_where_not_like_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_where_not_like_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->whereIdNotLike(1)->toRawSql(),
@@ -178,7 +212,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_or_where_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_or_where_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->orWhereId(1)->toRawSql(),
@@ -187,7 +222,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_or_where_not_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_or_where_not_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->orWhereIdNot(1)->toRawSql(),
@@ -196,7 +232,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_or_where_in_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_or_where_in_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->orWhereIdIn([1, 2])->toRawSql(),
@@ -205,7 +242,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_or_where_not_in_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_or_where_not_in_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->orWhereIdNotIn([1, 2])->toRawSql(),
@@ -214,7 +252,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_or_where_like_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_or_where_like_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->orWhereIdLike(1)->toRawSql(),
@@ -223,7 +262,8 @@ class BuilderMakeCommandTest extends TestCase
         );
     }
 
-    public function test_that_the_builder_dynamic_or_where_not_like_method_can_be_called()
+    #[Test]
+    public function the_builder_dynamic_or_where_not_like_method_can_be_called()
     {
         $this->assertEquals(
             expected: TestUser::query()->orWhereIdNotLike(1)->toRawSql(),
@@ -231,7 +271,6 @@ class BuilderMakeCommandTest extends TestCase
             message : 'The dynamic "where not like" cannot be called.'
         );
     }
-
 
     /**
      * Remove the generated Builder class.
@@ -242,6 +281,43 @@ class BuilderMakeCommandTest extends TestCase
      */
     protected static function cleanUp(string $builder): void
     {
-        unlink(base_path("app/Models/Builders/$builder.php"));
+        $builder    = base_path("app/Models/Builders/$builder.php");
+        $mixin      = base_path('.builder.mixin.php');
+        $reflection = new ReflectionClass(TestUser::class);
+
+        self::$fs->delete($builder);
+        self::$fs->delete($mixin);
+        self::$fs->replace($reflection->getFileName(), self::fixture());
+    }
+
+    /**
+     * Content of Test Model fixture.
+     *
+     * @return string
+     */
+    protected static function fixture(): string
+    {
+        return <<<'PHP'
+        <?php
+        
+        namespace App\Models;
+        
+        use App\Models\Builders\TestUserBuilder;
+        use Bjnstnkvc\BuilderMakeCommand\Concerns\HasDynamicBuilder;
+        use Illuminate\Database\Eloquent\Factories\HasFactory;
+        use Illuminate\Database\Eloquent\Model;
+        
+        /**
+         * @method static TestUserBuilder query() Begin querying the model.
+         *
+         * @mixin TestUserBuilder
+         */
+        class TestUser extends Model
+        {
+            use HasFactory;
+            use HasDynamicBuilder;
+        }
+
+        PHP;
     }
 }

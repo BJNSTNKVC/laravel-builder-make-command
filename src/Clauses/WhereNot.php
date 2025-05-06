@@ -28,5 +28,5 @@ class WhereNot extends Clause
      *
      * @var string
      */
-    protected string $signature = 'where%1$sNot(%2$s) Add a "where not" clause on the "%3$s" column to the query.';
+    protected string $signature = 'where%1$sNot(%2$s)';
 }

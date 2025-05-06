@@ -27,5 +27,5 @@ class OrWhereNot extends Clause
      *
      * @var string
      */
-    protected string $signature = 'orWhere%1$sNot(%2$s) Add an "or where not" clause on the "%3$s" column to the query.';
+    protected string $signature = 'orWhere%1$sNot(%2$s)';
 }
